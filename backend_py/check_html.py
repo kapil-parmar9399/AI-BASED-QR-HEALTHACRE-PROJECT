@@ -1,6 +1,9 @@
 import requests
+import os
 
-resp = requests.get('http://127.0.0.1:3001/patient/edit-profile')
+BASE_URL = f"http://127.0.0.1:{os.getenv('PORT','3001')}"
+
+resp = requests.get(f"{BASE_URL}/patient/edit-profile")
 
 # Check what's actually in the response
 print("Response length:", len(resp.text))

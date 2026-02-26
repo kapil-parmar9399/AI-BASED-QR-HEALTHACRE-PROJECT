@@ -97,6 +97,26 @@
                 </div>
             </div>
         </div>
+
+        <!-- Doctor Directory -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">🩺 Doctor Directory</h5>
+                </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    {% if doctors %}
+                        <ul class="list-group list-group-flush">
+                        {% for d in doctors[:20] %}
+                            <li class="list-group-item">{{ d.name }}{% if d.specialty %} — {{ d.specialty }}{% endif %}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted mb-0">No doctors available</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Action Buttons -->

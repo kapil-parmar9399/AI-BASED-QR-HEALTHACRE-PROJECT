@@ -4,6 +4,9 @@ Test script to verify prescription and visit functionality
 """
 import requests
 import json
+import os
+
+BASE_URL = f"http://127.0.0.1:{os.getenv('PORT','3001')}"
 
 session = requests.Session()
 
@@ -20,7 +23,7 @@ register_data = {
     "role": "patient"
 }
 
-resp = session.post('http://127.0.0.1:3001/register', data=register_data)
+resp = session.post(f'{BASE_URL}/register', data=register_data)
 print(f"   Register status: {resp.status_code}")
 
 # 2. Login
@@ -30,12 +33,12 @@ login_data = {
     "password": "Test@123"
 }
 
-resp = session.post('http://127.0.0.1:3001/login', data=login_data)
+resp = session.post(f'{BASE_URL}/login', data=login_data)
 print(f"   Login status: {resp.status_code}")
 
 # 3. Get prescription form
 print("\n3️⃣  Getting prescription form...")
-resp = session.get('http://127.0.0.1:3001/patient/add-prescription')
+resp = session.get(f'{BASE_URL}/patient/add-prescription')
 print(f"   Form status: {resp.status_code}")
 if "💊 Add Prescription" in resp.text or "Add Prescription" in resp.text:
     print("   ✓ Prescription form loaded successfully")
@@ -50,14 +53,14 @@ prescription_data = {
     "notes": "Take with food"
 }
 
-resp = session.post('http://127.0.0.1:3001/patient/add-prescription', data=prescription_data)
+resp = session.post(f'{BASE_URL}/patient/add-prescription', data=prescription_data)
 print(f"   POST status: {resp.status_code}")
 if "success" in resp.text.lower():
     print("   ✓ Success message shown")
 
 # 5. Get visit form
 print("\n5️⃣  Getting visit form...")
-resp = session.get('http://127.0.0.1:3001/patient/add-visit')
+resp = session.get(f'{BASE_URL}/patient/add-visit')
 print(f"   Form status: {resp.status_code}")
 if "Add Visit Record" in resp.text or "Doctor Name" in resp.text:
     print("   ✓ Visit form loaded successfully")
@@ -72,14 +75,14 @@ visit_data = {
     "notes": "Follow-up in 1 week"
 }
 
-resp = session.post('http://127.0.0.1:3001/patient/add-visit', data=visit_data)
+resp = session.post(f'{BASE_URL}/patient/add-visit', data=visit_data)
 print(f"   POST status: {resp.status_code}")
 if "success" in resp.text.lower():
     print("   ✓ Success message shown")
 
 # 7. Check patient records to verify data
 print("\n7️⃣  Verifying data in patient records...")
-resp = session.get('http://127.0.0.1:3001/patient/records')
+resp = session.get(f'{BASE_URL}/patient/records')
 print(f"   Records page status: {resp.status_code}")
 
 verification = []
@@ -113,7 +116,7 @@ else:
 
 # 8. Check dashboard
 print("\n8️⃣  Checking patient dashboard...")
-resp = session.get('http://127.0.0.1:3001/patient/dashboard')
+resp = session.get(f'{BASE_URL}/patient/dashboard')
 print(f"   Dashboard status: {resp.status_code}")
 if "Add Prescription" in resp.text:
     print("   ✓ Add Prescription button visible")

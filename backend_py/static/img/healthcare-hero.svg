@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+  <defs>
+    <linearGradient id="heroGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4f46e5;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0.1" />
+    </linearGradient>
+    <linearGradient id="heroGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="heroGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0891b2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="heroGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="600" fill="url(#heroGrad1)" rx="20"/>
+
+  <!-- Floating decoration circles -->
+  <circle cx="80" cy="100" r="50" fill="#dbeafe" opacity="0.2"/>
+  <circle cx="520" cy="480" r="60" fill="#ddd6fe" opacity="0.15"/>
+  <circle cx="550" cy="100" r="35" fill="#dcfce7" opacity="0.2"/>
+
+  <!-- Central Healthcare Icon Group -->
+  <g id="healthcare-system">
+    <!-- Stethoscope -->
+    <g id="stethoscope">
+      <circle cx="150" cy="120" r="12" fill="none" stroke="#4f46e5" stroke-width="5"/>
+      <circle cx="180" cy="120" r="12" fill="none" stroke="#4f46e5" stroke-width="5"/>
+      <path d="M 155 128 Q 165 160 175 200" stroke="#4f46e5" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <circle cx="175" cy="215" r="15" fill="none" stroke="#4f46e5" stroke-width="4"/>
+    </g>
+
+    <!-- Heartbeat line with heart -->
+    <g id="heartbeat">
+      <path d="M 250 320 L 280 320 L 295 305 L 310 335 L 330 320 L 380 320" stroke="url(#heroGrad2)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 290 280 Q 285 270 275 270 Q 265 270 265 280 Q 265 270 255 270 Q 245 270 240 280 Q 240 295 265 310 Q 290 295 290 280 Z" fill="url(#heroGrad2)"/>
+    </g>
+
+    <!-- Pill/Medication -->
+    <g id="pills">
+      <rect x="420" y="200" width="50" height="25" rx="12" fill="url(#heroGrad3)"/>
+      <circle cx="420" cy="212" r="8" fill="#06b6d4"/>
+      <circle cx="425" cy="215" r="2" fill="#ffffff"/>
+      
+      <rect x="460" y="230" width="40" height="20" rx="10" fill="url(#heroGrad4)"/>
+      <circle cx="470" cy="240" r="6" fill="#f59e0b"/>
+    </g>
+
+    <!-- QR Code symbol -->
+    <g id="qr-code">
+      <rect x="80" y="380" width="80" height="80" fill="none" stroke="#10b981" stroke-width="3" rx="4"/>
+      <rect x="90" y="390" width="15" height="15" fill="#10b981"/>
+      <rect x="115" y="390" width="15" height="15" fill="#10b981"/>
+      <rect x="140" y="390" width="15" height="15" fill="#10b981"/>
+      <rect x="90" y="415" width="15" height="15" fill="#10b981"/>
+      <rect x="140" y="415" width="15" height="15" fill="#10b981"/>
+      <rect x="90" y="440" width="15" height="15" fill="#10b981"/>
+      <rect x="115" y="440" width="15" height="15" fill="#10b981"/>
+      <rect x="140" y="440" width="15" height="15" fill="#10b981"/>
+      <text x="120" y="500" font-size="12" fill="#10b981" text-anchor="middle" font-weight="bold">QR Code</text>
+    </g>
+
+    <!-- Medical document -->
+    <g id="document">
+      <rect x="320" y="410" width="70" height="90" rx="4" fill="#ffffff" stroke="#06b6d4" stroke-width="2"/>
+      <line x1="330" y1="425" x2="380" y2="425" stroke="#06b6d4" stroke-width="1.5"/>
+      <line x1="330" y1="435" x2="380" y2="435" stroke="#06b6d4" stroke-width="1.5"/>
+      <line x1="330" y1="445" x2="375" y2="445" stroke="#06b6d4" stroke-width="1.5"/>
+      <circle cx="345" cy="465" r="8" fill="url(#heroGrad2)"/>
+      <text x="355" y="502" font-size="12" fill="#06b6d4" text-anchor="middle" font-weight="bold">Records</text>
+    </g>
+
+    <!-- Shield (Security) -->
+    <g id="security">
+      <path d="M 460 350 L 480 330 L 480 365 Q 480 390 465 400 Q 450 390 450 365 Z" fill="url(#heroGrad3)" stroke="#0891b2" stroke-width="2"/>
+      <path d="M 468 360 L 472 360 L 472 375 L 468 375 Z" fill="#ffffff"/>
+      <circle cx="470" cy="378" r="1.5" fill="#ffffff"/>
+    </g>
+  </g>
+
+  <!-- Text below -->
+  <text x="300" y="560" font-size="18" fill="#0f172a" text-anchor="middle" font-weight="bold">Digital Healthcare System</text>
+</svg>

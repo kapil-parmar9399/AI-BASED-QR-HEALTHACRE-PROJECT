@@ -12,7 +12,7 @@ register_data = {
     "role": "patient"
 }
 
-resp = session.post('http://127.0.0.1:3001/register', data=register_data)
+resp = session.post(f'{BASE_URL}/register', data=register_data)
 print(f"Register status: {resp.status_code}")
 
 # Now login
@@ -22,12 +22,12 @@ login_data = {
     "password": "Test@123"
 }
 
-resp = session.post('http://127.0.0.1:3001/login', data=login_data)
+resp = session.post(f'{BASE_URL}/login', data=login_data)
 print(f"Login status: {resp.status_code}")
 
 # Now get the edit profile page
 print("\nStep 3: Getting edit profile page...")
-resp = session.get('http://127.0.0.1:3001/patient/edit-profile')
+resp = session.get(f'{BASE_URL}/patient/edit-profile')
 print(f"Edit profile status: {resp.status_code}")
 print(f"Response length: {len(resp.text)}")
 

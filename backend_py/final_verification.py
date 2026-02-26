@@ -16,7 +16,7 @@ register_data = {
 }
 
 print("\n1️⃣  Registering new patient...")
-resp = session.post('http://127.0.0.1:3001/register', data=register_data)
+resp = session.post(f'{BASE_URL}/register', data=register_data)
 print(f"   ✓ Registration: {resp.status_code}")
 
 # Login
@@ -26,12 +26,12 @@ login_data = {
 }
 
 print("\n2️⃣  Logging in...")
-resp = session.post('http://127.0.0.1:3001/login', data=login_data)
+resp = session.post(f'{BASE_URL}/login', data=login_data)
 print(f"   ✓ Login: {resp.status_code}")
 
 # Get the form to verify it's there
 print("\n3️⃣  Fetching edit profile form...")
-resp = session.get('http://127.0.0.1:3001/patient/edit-profile')
+resp = session.get(f'{BASE_URL}/patient/edit-profile')
 print(f"   ✓ Form loaded: {resp.status_code}")
 print(f"   ✓ Form size: {len(resp.text)} bytes")
 

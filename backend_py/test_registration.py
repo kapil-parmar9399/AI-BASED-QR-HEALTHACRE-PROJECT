@@ -1,5 +1,9 @@
 import requests
 import time
+import os
+
+# base URL picks up PORT env var so scripts stay in sync with server config
+BASE_URL = f"http://127.0.0.1:{os.getenv('PORT','3001')}"
 
 time.sleep(2)
 
@@ -12,7 +16,7 @@ data = {
     'role': 'patient'
 }
 
-resp = requests.post('http://127.0.0.1:3001/register', data=data, allow_redirects=False)
+resp = requests.post(f'{BASE_URL}/register', data=data, allow_redirects=False)
 print(f'Register POST: {resp.status_code}')
 
 if resp.status_code == 303:

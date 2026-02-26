@@ -5,41 +5,41 @@
       <div class="col-lg-7 text-white">
         <h1 class="hero-title">Swasthya AI — Smart Care, Anytime</h1>
         <p class="hero-sub">QR Code Based Healthcare System with AI-Powered Health Analysis, Digital Records, Emergency Access, and Role-Based Dashboards</p>
-        <div class="d-flex gap-2 mt-4 flex-wrap">
+        <div class="d-flex gap-2 mt-4 flex-wrap" style="z-index: 10; position: relative;">
           {% if user %}
             {% if role == 'patient' %}
-              <a class="btn btn-cta btn-primary btn-lg" href="/patient/dashboard">📊 Patient Dashboard</a>
-              <a class="btn btn-cta btn-outline btn-lg" href="/patient/qrcode">📱 My QR Code</a>
+              <a class="btn btn-cta btn-primary btn-lg" href="/patient/dashboard" style="color: #fff !important; font-size: 1rem !important; visibility: visible !important;">📊 Patient Dashboard</a>
+              <a class="btn btn-cta btn-outline btn-lg" href="/patient/qrcode" style="color: #fff !important; font-size: 1rem !important; visibility: visible !important;">📱 My QR Code</a>
             {% elif role == 'doctor' %}
-              <a class="btn btn-cta btn-primary btn-lg" href="/doctor/dashboard">👨‍⚕️ Doctor Dashboard</a>
-              <a class="btn btn-cta btn-outline btn-lg" href="/appointments">📅 Appointments</a>
+              <a class="btn btn-cta btn-primary btn-lg" href="/doctor/dashboard" style="color: #fff !important; font-size: 1rem !important; visibility: visible !important;">👨‍⚕️ Doctor Dashboard</a>
+              <a class="btn btn-cta btn-outline btn-lg" href="/appointments" style="color: #fff !important; font-size: 1rem !important; visibility: visible !important;">📅 Appointments</a>
             {% elif role == 'admin' %}
-              <a class="btn btn-cta btn-primary btn-lg" href="/admin/dashboard">🔐 Admin Dashboard</a>
-              <a class="btn btn-cta btn-outline btn-lg" href="/patients">👥 All Patients</a>
+              <a class="btn btn-cta btn-primary btn-lg" href="/admin/dashboard" style="color: #fff !important; font-size: 1rem !important; visibility: visible !important;">🔐 Admin Dashboard</a>
+              <a class="btn btn-cta btn-outline btn-lg" href="/patients" style="color: #fff !important; font-size: 1rem !important; visibility: visible !important;">👥 All Patients</a>
             {% else %}
-              <a class="btn btn-cta btn-primary btn-lg" href="/patients">Manage Patients</a>
-              <a class="btn btn-cta btn-outline btn-lg" href="/appointments">View Appointments</a>
+              <a class="btn btn-cta btn-primary btn-lg" href="/patients" style="color: #fff !important; font-size: 1rem !important; visibility: visible !important;">Manage Patients</a>
+              <a class="btn btn-cta btn-outline btn-lg" href="/appointments" style="color: #fff !important; font-size: 1rem !important; visibility: visible !important;">View Appointments</a>
             {% endif %}
           {% else %}
-            <a class="btn btn-cta btn-primary btn-lg" href="/register">Get Started — Free</a>
-            <a class="btn btn-cta btn-outline btn-lg" href="/login">Sign In</a>
+            <a class="btn btn-cta btn-primary btn-lg" href="/register" style="color: #fff !important; font-size: 1rem !important; visibility: visible !important;">Get Started — Free</a>
+            <a class="btn btn-cta btn-outline btn-lg" href="/login" style="color: #fff !important; font-size: 1rem !important; visibility: visible !important;">Sign In</a>
           {% endif %}
         </div>
         {% if user %}
-        <div class="alert alert-info mt-4">
-          <span>Welcome, <strong>{{ user }}</strong> ({{ role | upper }})</span>
+        <div class="alert alert-info mt-4" style="z-index: 10; position: relative;">
+          <span style="color: #000;">Welcome, <strong>{{ user }}</strong> ({{ role | upper }})</span>
           <a href="/logout" class="badge bg-warning ms-2">Logout</a>
         </div>
         {% else %}
-        <div class="trust mt-4">
-          <span class="me-3">Trusted by hospitals & clinics</span>
+        <div class="trust mt-4" style="z-index: 10; position: relative; color: #fff;">
+          <span class="me-3" style="color: #fff;">Trusted by hospitals & clinics</span>
           <img src="/static/img/healthcare.svg" alt="logo" width="40"/>
         </div>
         {% endif %}
       </div>
       <div class="col-lg-5 text-center">
         <div class="hero-card mx-auto">
-          <img src="/static/img/doctor-hero.svg" alt="Doctor with medical tools" class="img-fluid" />
+          <img src="/static/img/healthcare-hero.svg" alt="Digital Healthcare System with QR, Medical Records, and Security" class="img-fluid" />
         </div>
       </div>
     </div>

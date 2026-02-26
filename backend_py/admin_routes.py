@@ -10,9 +10,15 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 def get_admin_router(db):
     """Create admin routes with database access"""
     
-    @router.get("/dashboard")
-    def admin_dashboard(request: Request):
-        """Admin dashboard with analytics"""
+    # NOTE: the primary HTML dashboard lives in `main.py` at `/admin/dashboard`.
+    # this router serves a JSON data endpoint used by tests or API clients.  the
+    # old path conflicted with the template route once the router was included
+    # (FastAPI would register the router later and override the earlier handler,
+    # causing browsers to see raw JSON instead of the rendered dashboard).  use a
+    # distinct path (`/admin/stats`) and update documentation/tests accordingly.
+    @router.get("/stats")
+    def admin_stats(request: Request):
+        """Return admin statistics as JSON"""
         user = request.session.get('user')
         role = request.session.get('role')
         

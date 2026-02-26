@@ -9,8 +9,15 @@ What's included
   - `POST /api/register` — register user (stores bcrypt-hashed password in `users` collection)
   - `POST /api/login` — login check
   - `GET /api/patients` — list patients
-  - `GET /api/doctors` — list doctors (stub)
+  - `GET /api/doctors` — list approved doctors (public)
   - `GET /api/appointments` — list appointments (stub)
+
+**Doctor approval workflow**
+
+Doctors registering via the front‑end are added to a separate `doctors` collection with an `approved: false` flag. They will **not** appear on the public doctors page until an administrator visits
+`/admin/doctors` and clicks the **Approve** button. The admin dashboard now shows a pending count and provides a link to the approval page.
+
+The corresponding automated tests exercise the flow (`tests/test_api.py`).
 
 How to run (Windows)
 
@@ -45,6 +52,13 @@ Notes
 - The Node backend in `backend/server.js` had references to `./routes/*` that do not exist in that subfolder; that mismatch likely caused API failures. This FastAPI scaffold provides the same API paths under `/api/*` and can be used to replace the Node server.
 - If you want, I can: (A) port every Node route in detail (CRUD + admin auth), (B) add token-based auth, or (C) wire the frontend to this API now.
 
+### Admin endpoints
+
+The HTML dashboard is served at `/admin/dashboard` (see `main.py`).
+For programmatic access to the same statistics — used by tests and external monitoring —
+the application exposes a JSON endpoint at `/admin/stats` (previously `/admin/dashboard` before
+the route was renamed to avoid a collision with the template handler).
+
 Full-Python mode
 
 I converted the project to server-rendered Python using FastAPI + Jinja2 templates. The `backend_py` folder now contains:
@@ -67,3 +81,17 @@ python main.py
 Open http://localhost:3001 in your browser. Default seeded user: `admin` / `admin` (use the Register page to create new users). The app will seed sample doctors, patients, and appointments on first start when connected to MongoDB.
 
 If MongoDB is not running, the app will still start and you can use the UI but data will not persist and DB-backed features will display stub messages.
+
+## Running automated tests
+
+The repository now includes Pytest-based integration tests that exercise core endpoints.
+
+```powershell
+cd backend_py
+# ensure dependencies (pytest, httpx) are installed
+pip install -r requirements.txt
+# run tests
+pytest -q
+```
+
+Tests use FastAPI's `TestClient` and create temporary users. Configure `TEST_ADMIN_USER`/`TEST_ADMIN_PASS` environment variables if you wish to control the admin credentials used in the suite.

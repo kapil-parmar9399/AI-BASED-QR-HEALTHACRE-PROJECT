@@ -1,5 +1,8 @@
 import requests
 import time
+import os
+
+BASE_URL = f"http://127.0.0.1:{os.getenv('PORT','3001')}"
 
 time.sleep(2)
 
@@ -13,15 +16,15 @@ data = {
 }
 
 # Register
-resp = requests.post('http://127.0.0.1:3001/register', data=data, allow_redirects=False)
+resp = requests.post(f'{BASE_URL}/register', data=data, allow_redirects=False)
 print(f'✓ Registration: {resp.status_code}')
 
 # Login
-resp = requests.post('http://127.0.0.1:3001/login', data={'username': username, 'password': 'test123'})
+resp = requests.post(f'{BASE_URL}/login', data={'username': username, 'password': 'test123'})
 print(f'✓ Login: {resp.status_code}')
 
 # Get edit profile page
-resp = requests.get('http://127.0.0.1:3001/patient/edit-profile')
+resp = requests.get(f'{BASE_URL}/patient/edit-profile')
 print(f'✓ Edit profile page: {resp.status_code}')
 
 if 'Edit Personal Information' in resp.text:
@@ -46,7 +49,7 @@ update_data = {
     'emergency_contact': '9876543211'
 }
 
-resp = requests.post('http://127.0.0.1:3001/patient/edit-profile', data=update_data)
+resp = requests.post(f'{BASE_URL}/patient/edit-profile', data=update_data)
 print(f'✓ Update personal info: {resp.status_code}')
 
 if 'updated successfully' in resp.text.lower():
@@ -59,7 +62,7 @@ medical_data = {
     'current_medications': 'Lisinopril 10mg, Metformin 500mg'
 }
 
-resp = requests.post('http://127.0.0.1:3001/patient/edit-medical', data=medical_data)
+resp = requests.post(f'{BASE_URL}/patient/edit-medical', data=medical_data)
 print(f'✓ Update medical info: {resp.status_code}')
 
 print('\n✅ All profile editing features working!')

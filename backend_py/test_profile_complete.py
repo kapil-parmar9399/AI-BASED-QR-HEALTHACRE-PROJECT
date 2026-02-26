@@ -19,7 +19,7 @@ data = {
     'role': 'patient'
 }
 
-resp = requests.post('http://127.0.0.1:3001/register', data=data, allow_redirects=False)
+resp = requests.post(f'{BASE_URL}/register', data=data, allow_redirects=False)
 print(f"   ✓ Registration successful (303 redirect)")
 
 # Login

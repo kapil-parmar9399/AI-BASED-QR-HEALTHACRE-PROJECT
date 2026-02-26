@@ -3,7 +3,7 @@ import requests
 time.sleep(2)
 
 # Check if forms are loading correctly
-resp = requests.get('http://127.0.0.1:3001/patient/edit-profile')
+resp = requests.get(f'{BASE_URL}/patient/edit-profile')
 
 checks = [
     ('Personal Information', 'Personal Information' in resp.text),

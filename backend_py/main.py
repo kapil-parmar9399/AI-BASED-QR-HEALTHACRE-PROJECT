@@ -2,7 +2,7 @@ import os
 import logging
 from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Request, Form, UploadFile, File
-from fastapi.responses import RedirectResponse, FileResponse, JSONResponse
+from fastapi.responses import RedirectResponse, FileResponse, JSONResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -38,6 +38,9 @@ from security import (
     SecurityHeaders,
 )
 from backup import DatabaseBackup
+
+# admin routes router
+from admin_routes import get_admin_router
 
 # Logging
 logging.basicConfig(
@@ -98,6 +101,19 @@ templates_dir = os.path.join(BASE_DIR, "templates")
 if not os.path.isdir(static_dir):
     os.makedirs(static_dir, exist_ok=True)
 templates = Jinja2Templates(directory=templates_dir)
+
+# Add strftime filter to Jinja2 for datetime formatting in templates
+def strftime_filter(dt, fmt):
+    """Jinja2 filter for datetime formatting"""
+    if isinstance(dt, str):
+        try:
+            from datetime import datetime as dt_class
+            dt = dt_class.fromisoformat(dt.replace('Z', '+00:00'))
+        except:
+            return dt
+    return dt.strftime(fmt) if hasattr(dt, 'strftime') else str(dt)
+
+templates.env.filters['strftime'] = strftime_filter
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # MongoDB setup
@@ -178,6 +194,16 @@ def generate_qr_code(data: str) -> str:
     return f"data:image/png;base64,{img_base64}"
 
 
+def require_admin(request: Request):
+    """Raise HTTPException unless current session user is admin."""
+    role = request.session.get('role')
+    if role != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+# include admin router after db is initialized
+app.include_router(get_admin_router(db))
+
+
 def analyze_health(patient_data: dict) -> dict:
     """Basic AI health analysis based on patient data"""
     analysis = {
@@ -251,9 +277,9 @@ def seed_db():
     
     if db.doctors.count_documents({}) == 0:
         db.doctors.insert_many([
-            {"name": "Dr. Rajesh Kumar", "specialty": "General Medicine", "experience": 15, "email": "rajesh@swasthya.com"},
-            {"name": "Dr. Priya Singh", "specialty": "Cardiology", "experience": 12, "email": "priya@swasthya.com"},
-            {"name": "Dr. Amit Patel", "specialty": "Pediatrics", "experience": 10, "email": "amit@swasthya.com"},
+            {"name": "Dr. Rajesh Kumar", "specialty": "General Medicine", "experience": 15, "email": "rajesh@swasthya.com", "approved": True},
+            {"name": "Dr. Priya Singh", "specialty": "Cardiology", "experience": 12, "email": "priya@swasthya.com", "approved": True},
+            {"name": "Dr. Amit Patel", "specialty": "Pediatrics", "experience": 10, "email": "amit@swasthya.com", "approved": True},
         ])
     
     if db.patients.count_documents({}) == 0:
@@ -343,14 +369,26 @@ def register_post(request: Request, username: str = Form(...), password: str = F
         return templates.TemplateResponse("register.html", {"request": request, "error": "User exists"})
     
     hashed = password_manager.hash_password(password)
+    user_role = role if role in ["patient", "doctor", "admin"] else "patient"
     db.users.insert_one({
         "username": username,
         "password": hashed,
         "name": name,
-        "role": role if role in ["patient", "doctor", "admin"] else "patient"
+        "role": user_role
     })
+    # if doctor register, add to doctor collection with approval flag
+    if user_role == "doctor":
+        try:
+            db.doctors.insert_one({
+                "name": name,
+                "approved": False,
+                # additional fields can be added later via profile
+            })
+        except Exception:
+            pass
+
     request.session["user"] = username
-    request.session["role"] = role
+    request.session["role"] = user_role
     return RedirectResponse(url='/', status_code=303)
 
 
@@ -889,16 +927,20 @@ def doctor_dashboard(request: Request):
     if db is None:
         patients = []
         appointments = []
+        doctors_list = []
     else:
         patients = [oid_to_str(d) for d in db.users.find({"role": "patient"}).limit(50)]
         appointments = [oid_to_str(d) for d in db.appointments.find().limit(50)]
+        # doctor panel should show all registered/approved doctors
+        doctors_list = [oid_to_str(d) for d in db.doctors.find({"approved": True}).limit(50)]
     
     return templates.TemplateResponse("doctor_dashboard.html", {
         "request": request,
         "user": user,
         "role": role,
         "patients": patients,
-        "appointments": appointments
+        "appointments": appointments,
+        "doctors": doctors_list
     })
 
 
@@ -989,26 +1031,81 @@ def add_visit_record(request: Request, patient_id: str = Form(...),
 # ===== ADMIN ROUTES =====
 @app.get("/admin/dashboard")
 def admin_dashboard(request: Request):
+    try:
+        user = request.session.get("user")
+        role = request.session.get("role")
+        if not user or role != "admin":
+            return RedirectResponse(url='/login', status_code=303)
+
+        if db is None:
+            stats = {"patients": 0, "doctors": 0, "appointments": 0, "pending_doctors": 0}
+        else:
+            stats = {
+                "patients": db.users.count_documents({"role": "patient"}),
+                "doctors": db.users.count_documents({"role": "doctor"}),
+                "appointments": db.appointments.count_documents({}),
+                "pending_doctors": db.doctors.count_documents({"approved": False})
+            }
+
+        # debug: indicate template handler was executed (logs before response)
+        logger.debug("served admin_dashboard template for user=%s", user)
+        return templates.TemplateResponse("admin_dashboard.html", {
+            "request": request,
+            "user": user,
+            "stats": stats
+        })
+    except Exception as e:
+        # Log full exception traceback for diagnostics and return a friendly HTML error
+        logger.exception("Error rendering admin dashboard")
+        body = "<h2>Internal Server Error</h2><p>Unable to render admin dashboard. Check server logs for details.</p>"
+        return HTMLResponse(content=body, status_code=500)
+
+
+
+# ===== ADMIN DOCTOR APPROVAL ROUTES =====
+
+@app.get("/admin/doctors", tags=["admin"])
+def admin_list_doctors(request: Request):
+    try:
+        user = request.session.get("user")
+        role = request.session.get("role")
+        if not user or role != "admin":
+            return RedirectResponse(url='/login', status_code=303)
+        
+        docs = []
+        if db is not None:
+            docs = [oid_to_str(d) for d in db.doctors.find().sort("approved", 1)]
+        
+        return templates.TemplateResponse("admin_doctors.html", {
+            "request": request,
+            "user": user,
+            "doctors": docs
+        })
+    except Exception as e:
+        logger.exception(f"Error loading admin doctors page: {e}")
+        return HTMLResponse(
+            content=f"<h2>Error</h2><p>Unable to load doctors list: {str(e)}</p>",
+            status_code=500
+        )
+
+@app.post("/admin/doctors/approve", tags=["admin"])
+def admin_approve_doctor(request: Request, doctor_id: str = Form(...)):
     user = request.session.get("user")
     role = request.session.get("role")
     if not user or role != "admin":
         return RedirectResponse(url='/login', status_code=303)
     
-    if db is None:
-        stats = {"patients": 0, "doctors": 0, "appointments": 0}
-    else:
-        stats = {
-            "patients": db.users.count_documents({"role": "patient"}),
-            "doctors": db.users.count_documents({"role": "doctor"}),
-            "appointments": db.appointments.count_documents({})
-        }
+    try:
+        if db is None:
+            logger.error("Database not available for doctor approval")
+        else:
+            oid = ObjectId(doctor_id)
+            result = db.doctors.update_one({"_id": oid}, {"$set": {"approved": True}})
+            logger.info(f"Doctor approval: matched={result.matched_count}, modified={result.modified_count}")
+    except Exception as e:
+        logger.exception(f"Error approving doctor {doctor_id}: {e}")
     
-    return templates.TemplateResponse("admin_dashboard.html", {
-        "request": request,
-        "user": user,
-        "stats": stats
-    })
-
+    return RedirectResponse(url='/admin/doctors', status_code=303)
 
 # ===== EMERGENCY ACCESS (No login required) =====
 @app.get("/emergency/{patient_qr_id}")
@@ -1122,11 +1219,17 @@ def add_patient(request: Request, name: str = Form(...), age: int = Form(...),
 @app.get('/doctors')
 def doctors_view(request: Request):
     user = request.session.get('user')
+    role = request.session.get('role')
     
     if db is None:
         docs = []
     else:
-        docs = [oid_to_str(d) for d in db.doctors.find().limit(100)]
+        if role == 'admin':
+            # admin sees all doctors for review
+            docs = [oid_to_str(d) for d in db.doctors.find().limit(100)]
+        else:
+            # only show approved doctors to general users
+            docs = [oid_to_str(d) for d in db.doctors.find({"approved": True}).limit(100)]
     
     return templates.TemplateResponse('doctors.html', {
         'request': request,
@@ -1325,6 +1428,12 @@ def api_list_patients():
         return []
     return [oid_to_str(d) for d in db.patients.find().limit(100)]
 
+@app.get("/api/doctors", tags=["doctors"])
+def api_list_doctors():
+    if db is None:
+        return []
+    return [oid_to_str(d) for d in db.doctors.find({"approved": True}).limit(100)]
+
 
 # ============== ADMIN & BACKUP ROUTES ==============
 
@@ -1354,7 +1463,7 @@ async def shutdown_event():
 @app.get("/admin/backup/list", tags=["admin"])
 def list_backups_admin(request: Request):
     """List all available database backups"""
-    # TODO: Add admin authentication check
+    require_admin(request)
     user = request.session.get('user')
     
     try:
@@ -1370,7 +1479,7 @@ def list_backups_admin(request: Request):
 @app.post("/admin/backup/create", tags=["admin"])
 def create_backup_admin(request: Request):
     """Create a new database backup"""
-    # TODO: Add admin authentication check
+    require_admin(request)
     user = request.session.get('user')
     
     try:
@@ -1394,7 +1503,7 @@ def cleanup_backups_admin(
     keep_count: int = 10
 ):
     """Clean up old backups"""
-    # TODO: Add admin authentication check
+    require_admin(request)
     user = request.session.get('user')
     
     try:
@@ -1429,9 +1538,9 @@ def health_check():
 
 
 @app.get("/api/config/info", tags=["system"])
-def config_info():
+def config_info(request: Request):
     """Get non-sensitive configuration info (admin only)"""
-    # TODO: Add admin authentication check
+    require_admin(request)
     return {
         "app_name": "Swasthya - AI QR Healthcare System",
         "version": "1.0.0",
