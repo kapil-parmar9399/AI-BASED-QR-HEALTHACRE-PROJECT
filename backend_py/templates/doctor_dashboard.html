@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">👨‍⚕️ Doctor Dashboard</h2>
+            <p class="text-muted">Manage patients and appointments</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <span class="badge bg-primary p-2">{{ user }}</span>
+            <a href="/logout" class="btn btn-sm btn-outline-danger ms-2">Logout</a>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 bg-light">
+                <div class="card-body text-center">
+                    <h3 class="card-title text-primary">{{ patients | length }}</h3>
+                    <p class="card-text text-muted mb-0">Total Patients</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 bg-light">
+                <div class="card-body text-center">
+                    <h3 class="card-title text-success">{{ appointments | length }}</h3>
+                    <p class="card-text text-muted mb-0">Appointments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 bg-light">
+                <div class="card-body text-center">
+                    <h3 class="card-title text-info">📅</h3>
+                    <p class="card-text text-muted mb-0">Today's Schedule</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Appointments -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">📅 Upcoming Appointments</h5>
+                </div>
+                <div class="card-body">
+                    {% if appointments %}
+                        <div class="list-group list-group-flush">
+                        {% for apt in appointments[:5] %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="mb-1"><strong>{{ apt.get('patient_name', 'N/A') }}</strong></p>
+                                    <small class="text-muted">{{ apt.get('date', '') }} at {{ apt.get('time', '') }}</small>
+                                </div>
+                                <span class="badge bg-{{ 'success' if apt.get('status') == 'scheduled' else 'warning' }}">
+                                    {{ apt.get('status', 'pending') }}
+                                </span>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No appointments scheduled</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Patients List -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">👥 Your Patients</h5>
+                </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    {% if patients %}
+                        <div class="list-group list-group-flush">
+                        {% for patient in patients[:10] %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="mb-1"><strong>{{ patient.get('name', 'N/A') }}</strong></p>
+                                    <small class="text-muted">Age: {{ patient.get('age', 'N/A') }} | {{ patient.get('blood_group', 'N/A') }}</small>
+                                </div>
+                                <a href="/doctor/patient/{{ patient.get('id', '') }}" class="btn btn-sm btn-primary">
+                                    View →
+                                </a>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No patients assigned</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0 bg-light">
+                <div class="card-body">
+                    <h5 class="mb-3">Quick Actions</h5>
+                    <div class="btn-group" role="group">
+                        <a href="/appointments" class="btn btn-outline-primary">View All Appointments</a>
+                        <a href="/patients" class="btn btn-outline-success">Browse All Patients</a>
+                        <a href="/" class="btn btn-outline-secondary">Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

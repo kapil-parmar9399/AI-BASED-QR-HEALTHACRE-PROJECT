@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="text-center mb-4">
+                <h2 class="mb-2">📱 Your Patient QR Code</h2>
+                <p class="text-muted">Share this QR code with healthcare providers for quick access to your records</p>
+                <p class="text-muted small">Ensure the device scanning this QR is on the same network as the server. 
+                If you see "site not reached" make sure to set <code>PUBLIC_URL</code> (e.g. http://192.168.1.5:3002) or use your PC's LAN IP instead of 127.0.0.1.</p>
+            </div>
+
+            {% if patient and qr_data %}
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body text-center p-5">
+                    <img src="{{ qr_data }}" alt="Patient QR Code" class="img-fluid" style="max-width: 300px; border-radius: 8px;">
+                    
+                    <div class="mt-4">
+                        <p><strong>Patient ID:</strong></p>
+                        <p class="font-monospace" style="background: #f8f9fa; padding: 10px; border-radius: 4px;">
+                            {{ patient.get('id', 'N/A') }}
+                        </p>
+                        {% if public_link %}
+                        <p class="mt-2"><strong>Public link (for QR scanning):</strong></p>
+                        <p><a href="{{ public_link }}" target="_blank">{{ public_link }}</a></p>
+                        {% if token_created %}
+                        <p class="mt-2 text-muted small">Token created: {{ token_created }} (expires in {{ (7) }} days)</p>
+                        {% endif %}
+                        {% if sent_message %}
+                        <div class="alert alert-success mt-3">{{ sent_message }}</div>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-primary w-100" onclick="downloadQR()">
+                        ⬇️ Download QR Code
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-secondary w-100" onclick="printQR()">
+                        🖨️ Print QR Code
+                    </button>
+                </div>
+            </div>
+
+            <form method="post" action="/patient/regenerate-token" class="mt-3">
+                <button type="submit" class="btn btn-warning w-100">🔁 Regenerate Access Token</button>
+            </form>
+
+            <div class="alert alert-info mt-4" role="alert">
+                <strong>ℹ️ Emergency Access:</strong> This QR code enables doctors to quickly access your emergency medical information, even without login.
+            </div>
+
+            <a href="/patient/dashboard" class="btn btn-link mt-3">← Back to Dashboard</a>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+                Unable to generate QR code. Please try again later.
+            </div>
+            <a href="/patient/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function downloadQR() {
+    const link = document.createElement('a');
+    link.href = '{{ qr_data }}';
+    link.download = 'patient_qr_code.png';
+    link.click();
+}
+
+function printQR() {
+    const printWindow = window.open();
+    printWindow.document.write('<img src="{{ qr_data }}" style="max-width: 400px; margin: 20px;">');
+    printWindow.document.close();
+    printWindow.print();
+}
+</script>
+{% endblock %}

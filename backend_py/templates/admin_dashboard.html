@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">🔐 Admin Dashboard</h2>
+            <p class="text-muted">System Management & Analytics</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <span class="badge bg-danger p-2">Admin: {{ user }}</span>
+            <a href="/logout" class="btn btn-sm btn-outline-danger ms-2">Logout</a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 feature-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Total Patients</p>
+                            <h3 class="text-primary">{{ stats.patients }}</h3>
+                        </div>
+                        <div style="font-size: 32px;">👥</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 feature-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Registered Doctors</p>
+                            <h3 class="text-success">{{ stats.doctors }}</h3>
+                        </div>
+                        <div style="font-size: 32px;">👨‍⚕️</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 feature-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Total Appointments</p>
+                            <h3 class="text-info">{{ stats.appointments }}</h3>
+                        </div>
+                        <div style="font-size: 32px;">📅</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 feature-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">System Status</p>
+                            <h3 class="text-success">🟢 Active</h3>
+                        </div>
+                        <div style="font-size: 32px;">✅</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- System Features -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">✨ System Features</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>✅ QR Code Patient Identification</span>
+                            <span class="badge bg-success">Active</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>✅ Digital Medical Records</span>
+                            <span class="badge bg-success">Active</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>✅ Role-Based Access Control</span>
+                            <span class="badge bg-success">Active</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>✅ AI Health Analysis</span>
+                            <span class="badge bg-success">Active</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>✅ Emergency Access Feature</span>
+                            <span class="badge bg-success">Active</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>✅ Appointment Tracking</span>
+                            <span class="badge bg-success">Active</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Information -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">ℹ️ System Information</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>System Name:</strong> Swasthya - AI QR Healthcare</p>
+                    <p class="mb-2"><strong>Version:</strong> 1.0.0</p>
+                    <p class="mb-2"><strong>Database:</strong> MongoDB</p>
+                    <p class="mb-2"><strong>Backend:</strong> FastAPI (Python)</p>
+                    <p class="mb-2"><strong>Frontend:</strong> Jinja2 Templates</p>
+                    <p class="mb-2"><strong>API Status:</strong> <span class="badge bg-success">Operational</span></p>
+                    <p class="mb-0"><strong>Last Updated:</strong> {{ "now" | strftime('%Y-%m-%d %H:%M') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Actions -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">⚙️ Admin Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="/patients" class="btn btn-outline-primary w-100">View All Patients</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="/doctors" class="btn btn-outline-success w-100">View All Doctors</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="/appointments" class="btn btn-outline-info w-100">View Appointments</a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="/" class="btn btn-outline-secondary w-100">Go to Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Description -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0 bg-light">
+                <div class="card-header">
+                    <h5 class="mb-0">📖 About Swasthya</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">
+                        Swasthya is an AI-powered QR code based healthcare system designed to revolutionize patient care management. 
+                        Our platform provides:
+                    </p>
+                    <ul>
+                        <li><strong>Instant Patient Identification:</strong> Quick QR code scanning for immediate access to medical records</li>
+                        <li><strong>Comprehensive Medical Records:</strong> Secure digital storage of patient history, prescriptions, and reports</li>
+                        <li><strong>Role-Based Security:</strong> Separate dashboards for Patients, Doctors, and Administrators</li>
+                        <li><strong>AI Health Insights:</strong> Intelligent analysis of patient data for better clinical decisions</li>
+                        <li><strong>Emergency Access:</strong> Critical information available without login during emergencies</li>
+                        <li><strong>Appointment Management:</strong> Efficient scheduling and tracking of patient visits</li>
+                        <li><strong>Paperless Operations:</strong> Complete digital workflow for modern healthcare</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .feature-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
+{% endblock %}

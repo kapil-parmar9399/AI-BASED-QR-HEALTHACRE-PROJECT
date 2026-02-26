@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">👤 Patient Details & Records</h2>
+            <p class="text-muted">{{ patient.get('name', 'N/A') }} - ID: {{ patient.get('id', 'N/A')[:8] }}...</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/doctor/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    {% if patient and analysis %}
+    <div class="row">
+        <!-- Patient Information -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">📋 Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Name:</strong> {{ patient.get('name', 'N/A') }}</p>
+                    <p class="mb-2"><strong>Age:</strong> {{ patient.get('age', 'N/A') }} years</p>
+                    <p class="mb-2"><strong>Blood Group:</strong> {{ patient.get('blood_group', 'N/A') }}</p>
+                    <p class="mb-2"><strong>Contact:</strong> {{ patient.get('contact', 'N/A') }}</p>
+                    <p class="mb-0"><strong>Email:</strong> {{ patient.get('email', 'N/A') }}</p>
+                </div>
+            </div>
+
+            <!-- Health Risk Assessment -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">⚠️ Health Assessment</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Age Risk Level:</strong></p>
+                    <div class="badge bg-{{ 'danger' if analysis.age_risk == 'High' else 'warning' if analysis.age_risk == 'Medium' else 'success' }}">
+                        {{ analysis.get('age_risk', 'N/A') }}
+                    </div>
+                    
+                    <p class="mt-3 mb-2"><strong>Health Pattern:</strong></p>
+                    <p class="text-muted mb-0">{{ analysis.get('pattern', 'N/A') }}</p>
+                    
+                    {% if analysis.get('recommendations', []) %}
+                    <p class="mt-3 mb-2"><strong>AI Recommendations:</strong></p>
+                    <ul class="mb-0">
+                    {% for rec in analysis.get('recommendations', []) %}
+                        <li><small>{{ rec }}</small></li>
+                    {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Allergies & Medications -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">🚨 Critical Information</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Allergies:</strong></p>
+                    {% if patient.get('allergies', []) %}
+                        <div class="mb-3">
+                        {% for allergy in patient.get('allergies', []) %}
+                            <span class="badge bg-danger">{{ allergy }}</span>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-3">None recorded</p>
+                    {% endif %}
+
+                    <p class="mb-2"><strong>Current Medications:</strong></p>
+                    {% if patient.get('current_medications', []) %}
+                        <ul class="mb-0">
+                        {% for med in patient.get('current_medications', []) %}
+                            <li><small>{{ med }}</small></li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted mb-0">None prescribed</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-8">
+            <!-- Add Prescription Form -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">💊 Add Prescription</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/doctor/add-prescription">
+                        <input type="hidden" name="patient_id" value="{{ patient.get('id', '') }}">
+                        
+                        <div class="mb-3">
+                            <label for="medicine" class="form-label">Medicine Name</label>
+                            <input type="text" class="form-control" id="medicine" name="medicine" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="dosage" class="form-label">Dosage</label>
+                                <input type="text" class="form-control" id="dosage" name="dosage" placeholder="e.g., 500mg" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="duration" class="form-label">Duration</label>
+                                <input type="text" class="form-control" id="duration" name="duration" placeholder="e.g., 7 days" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success w-100">Add Prescription</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Add Visit Record -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">📝 Add Visit Record</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/doctor/add-visit">
+                        <input type="hidden" name="patient_id" value="{{ patient.get('id', '') }}">
+                        
+                        <div class="mb-3">
+                            <label for="diagnosis" class="form-label">Diagnosis</label>
+                            <input type="text" class="form-control" id="diagnosis" name="diagnosis" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="treatment" class="form-label">Treatment Plan</label>
+                            <textarea class="form-control" id="treatment" name="treatment" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Additional Notes</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="2"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-info w-100">Record Visit</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Recent Prescriptions -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">💊 Recent Prescriptions</h5>
+                </div>
+                <div class="card-body">
+                    {% if patient.get('prescriptions', []) %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Medicine</th>
+                                        <th>Dosage</th>
+                                        <th>Duration</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for rx in patient.get('prescriptions', []) | reverse %}
+                                    <tr>
+                                        <td>{{ rx.get('date', '')[:10] }}</td>
+                                        <td><strong>{{ rx.get('medicine', 'N/A') }}</strong></td>
+                                        <td>{{ rx.get('dosage', 'N/A') }}</td>
+                                        <td>{{ rx.get('duration', 'N/A') }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No prescriptions on record</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Visit History -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">📈 Visit History</h5>
+                </div>
+                <div class="card-body">
+                    {% if patient.get('visits', []) %}
+                        {% for visit in patient.get('visits', []) | reverse %}
+                            <div class="border-bottom pb-3 mb-3">
+                                <h6 class="mb-2">📅 {{ visit.get('date', '')  }}</h6>
+                                <p class="mb-1"><strong>Diagnosis:</strong> {{ visit.get('diagnosis', 'N/A') }}</p>
+                                <p class="mb-0"><strong>Treatment:</strong> {{ visit.get('treatment', 'N/A') }}</p>
+                                {% if visit.get('notes') %}
+                                    <p class="mt-2 mb-0"><small class="text-muted">{{ visit.get('notes') }}</small></p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted mb-0">No visit records on file</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+        Patient information not available.
+    </div>
+    <a href="/doctor/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+    {% endif %}
+</div>
+{% endblock %}

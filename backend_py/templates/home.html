@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="hero py-6">
+    <div class="row align-items-center">
+      <div class="col-lg-7 text-white">
+        <h1 class="hero-title">Swasthya AI — Smart Care, Anytime</h1>
+        <p class="hero-sub">QR Code Based Healthcare System with AI-Powered Health Analysis, Digital Records, Emergency Access, and Role-Based Dashboards</p>
+        <div class="d-flex gap-2 mt-4 flex-wrap">
+          {% if user %}
+            {% if role == 'patient' %}
+              <a class="btn btn-cta btn-primary btn-lg" href="/patient/dashboard">📊 Patient Dashboard</a>
+              <a class="btn btn-cta btn-outline btn-lg" href="/patient/qrcode">📱 My QR Code</a>
+            {% elif role == 'doctor' %}
+              <a class="btn btn-cta btn-primary btn-lg" href="/doctor/dashboard">👨‍⚕️ Doctor Dashboard</a>
+              <a class="btn btn-cta btn-outline btn-lg" href="/appointments">📅 Appointments</a>
+            {% elif role == 'admin' %}
+              <a class="btn btn-cta btn-primary btn-lg" href="/admin/dashboard">🔐 Admin Dashboard</a>
+              <a class="btn btn-cta btn-outline btn-lg" href="/patients">👥 All Patients</a>
+            {% else %}
+              <a class="btn btn-cta btn-primary btn-lg" href="/patients">Manage Patients</a>
+              <a class="btn btn-cta btn-outline btn-lg" href="/appointments">View Appointments</a>
+            {% endif %}
+          {% else %}
+            <a class="btn btn-cta btn-primary btn-lg" href="/register">Get Started — Free</a>
+            <a class="btn btn-cta btn-outline btn-lg" href="/login">Sign In</a>
+          {% endif %}
+        </div>
+        {% if user %}
+        <div class="alert alert-info mt-4">
+          <span>Welcome, <strong>{{ user }}</strong> ({{ role | upper }})</span>
+          <a href="/logout" class="badge bg-warning ms-2">Logout</a>
+        </div>
+        {% else %}
+        <div class="trust mt-4">
+          <span class="me-3">Trusted by hospitals & clinics</span>
+          <img src="/static/img/healthcare.svg" alt="logo" width="40"/>
+        </div>
+        {% endif %}
+      </div>
+      <div class="col-lg-5 text-center">
+        <div class="hero-card mx-auto">
+          <img src="/static/img/doctor-hero.svg" alt="Doctor with medical tools" class="img-fluid" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features mt-5">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card feature-card h-100">
+          <div class="card-body">
+            <h5 class="card-title">🔗 QR Code Identification</h5>
+            <p class="card-text">Instant patient identification and medical records access via unique QR codes</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card feature-card h-100">
+          <div class="card-body">
+            <h5 class="card-title">🏥 Digital Medical Records</h5>
+            <p class="card-text">Comprehensive electronic health records with prescriptions, reports, and visit history</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card feature-card h-100">
+          <div class="card-body">
+            <h5 class="card-title">🔐 Role-Based Access</h5>
+            <p class="card-text">Separate secure dashboards for Patients, Doctors, and Administrators</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card feature-card h-100">
+          <div class="card-body">
+            <h5 class="card-title">⚡ AI Health Analysis</h5>
+            <p class="card-text">Intelligent risk assessment and health pattern analysis powered by AI</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card feature-card h-100">
+          <div class="card-body">
+            <h5 class="card-title">🚑 Emergency Access</h5>
+            <p class="card-text">Quick access to critical patient data during emergencies without login</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card feature-card h-100">
+          <div class="card-body">
+            <h5 class="card-title">📅 Appointment Tracking</h5>
+            <p class="card-text">Schedule, manage, and track patient consultations and visits effortlessly</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonials mt-5">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="testimonial">
+          <div class="quote">"Swasthya AI's QR code system helped our clinic manage patient records effortlessly — the team adopted it within days. Secure and fast."</div>
+          <div class="who muted">Dr. Meera — City Health Clinic</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="testimonial">
+          <div class="quote">"Emergency access to patient data during critical situations is a lifesaver. File uploads and appointment scheduling are delightfully simple."</div>
+          <div class="who muted">Clinic Admin — Sunrise Care</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section mt-5 text-center">
+    <h3>Ready to revolutionize your healthcare?</h3>
+    <p class="lead">Join Swasthya - Experience AI-Powered Healthcare Management Today</p>
+    {% if user %}
+      {% if role == 'patient' %}
+        <a class="btn btn-lg btn-primary" href="/patient/dashboard">Go to Dashboard</a>
+      {% elif role == 'doctor' %}
+        <a class="btn btn-lg btn-primary" href="/doctor/dashboard">Go to Dashboard</a>
+      {% elif role == 'admin' %}
+        <a class="btn btn-lg btn-primary" href="/admin/dashboard">Go to Dashboard</a>
+      {% else %}
+        <a class="btn btn-lg btn-primary" href="/patients">Go to Dashboard</a>
+      {% endif %}
+    {% else %}
+      <a class="btn btn-lg btn-primary" href="/register">Create Free Account</a>
+    {% endif %}
+  </section>
+{% endblock %}

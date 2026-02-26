@@ -1,0 +1,173 @@
+    body {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 40%);
+    color: #0f172a;
+}
+
+.navbar-brand {
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+
+:root {
+    --primary: #4f46e5;
+    --primary-dark: #3730a3;
+    --muted: #6b7280;
+}
+
+
+/* Hero */
+
+.hero {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    padding: 60px;
+    border-radius: 12px;
+}
+
+.hero-title {
+    font-size: 2.4rem;
+    font-weight: 800;
+}
+
+.hero-sub {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-card {
+     :root {
+        --primary: #4f46e5;
+        --primary-2: #7c3aed;
+        --primary-dark: #3730a3;
+        --muted: #6b7280;
+        --bg: #f8fafc;
+    }
+    html,
+    body {
+        height: 100%;
+    }
+    body {
+        background: linear-gradient(180deg, var(--bg) 0%, #ffffff 44%);
+        color: #0f172a;
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    .navbar-brand {
+        font-weight: 800;
+        letter-spacing: 0.2px;
+    }
+    /* Hero */
+    .hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        padding: 64px;
+        border-radius: 16px;
+    }
+    .hero:before {
+        content: '';
+        position: absolute;
+        width: 520px;
+        height: 520px;
+        right: -120px;
+        top: -140px;
+        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.12), transparent 30%);
+        transform: rotate(15deg);
+    }
+    .hero:after {
+        content: '';
+        position: absolute;
+        width: 360px;
+        height: 360px;
+        left: -60px;
+        bottom: -60px;
+        background: radial-gradient(circle at 60% 40%, rgba(255, 255, 255, 0.06), transparent 30%);
+        filter: blur(20px);
+    }
+    .hero-title {
+        font-size: 2.6rem;
+        font-weight: 800;
+        line-height: 1.05;
+        margin-bottom: 8px;
+        color: #fff;
+    }
+    .hero-sub {
+        font-size: 1.05rem;
+        color: rgba(255, 255, 255, 0.95);
+        max-width: 54ch;
+    }
+    .hero-card {
+        background: rgba(255, 255, 255, 0.06);
+        padding: 30px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+        max-width: 360px;
+    }
+    .btn-cta {
+        padding: 0.8rem 1.2rem;
+    }
+    .btn-primary {
+        background: linear-gradient(90deg, var(--primary) 0%, var(--primary-2) 100%);
+        border-color: transparent;
+        box-shadow: 0 8px 30px rgba(79, 70, 229, 0.18);
+        color: #fff;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 40px rgba(79, 70, 229, 0.22);
+    }
+    .btn-outline {
+        background: transparent;
+        border: 2px solid rgba(255, 255, 255, 0.18);
+        color: rgba(255, 255, 255, 0.98);
+    }
+    .btn-cta .icon {
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+    /* Features */
+    .feature-card {
+        border: 0;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+        transition: transform .18s ease, box-shadow .18s ease;
+        background: linear-gradient(180deg, #fff, #fff);
+    }
+    .feature-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+    .trust img {
+        opacity: 0.9;
+    }
+    /* CTA section */
+    .cta-section {
+        background: linear-gradient(180deg, #eef2ff, #fff);
+        padding: 36px;
+        border-radius: 10px;
+        box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+    }
+    /* Testimonials */
+    .testimonial {
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(2, 6, 23, 0.06);
+    }
+    .testimonial .quote {
+        font-size: 1rem;
+        color: var(--muted);
+    }
+    .testimonial .who {
+        font-weight: 600;
+        margin-top: 10px;
+    }
+    /* small helpers */
+    .muted {
+        color: var(--muted);
+    }
+    @media (max-width:768px) {
+        .hero {
+            padding: 30px;
+        }
+        .hero-title {
+            font-size: 1.6rem;
+        }
+    }

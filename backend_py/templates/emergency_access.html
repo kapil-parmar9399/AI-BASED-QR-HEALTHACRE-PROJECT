@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>🚨 EMERGENCY ACCESS MODE</strong>
+        <p class="mb-0">Critical patient information displayed. This is a secure emergency access interface.</p>
+    </div>
+
+    {% if patient %}
+    <div class="row">
+        <!-- Critical Information (Prominently Displayed) -->
+        <div class="col-md-8">
+            <div class="card shadow-lg border-danger mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">⚠️ CRITICAL PATIENT INFORMATION</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Patient Identity</h5>
+                            <p class="mb-2"><strong style="font-size: 1.2em;">{{ patient.get('name', 'UNKNOWN') }}</strong></p>
+                            <p class="mb-2"><strong>Age:</strong> {{ patient.get('age', 'N/A') }} years old</p>
+                            <p class="mb-2"><strong>Contact:</strong> {{ patient.get('contact', 'N/A') }}</p>
+                            <p class="mb-0"><strong>Emergency Contact:</strong> {{ patient.get('emergency_contact', 'N/A') }}</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Vital Medical Data</h5>
+                            <p class="mb-2"><strong>Blood Group:</strong> 
+                                <span class="badge bg-danger p-2" style="font-size: 0.9em;">
+                                    {{ patient.get('blood_group', 'UNKNOWN') }}
+                                </span>
+                            </p>
+                            <p class="mb-2"><strong>Address:</strong> {{ patient.get('address', 'N/A') }}</p>
+                            <p class="mb-0"><strong>Email:</strong> {{ patient.get('email', 'N/A') }}</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- ALLERGIES (Critical) -->
+                    <div class="alert alert-danger" role="alert">
+                        <h5 class="alert-heading">🚨 ALLERGIES & CONTRAINDICATIONS</h5>
+                        {% if patient.get('allergies', []) %}
+                            <ul class="mb-0">
+                            {% for allergy in patient.get('allergies', []) %}
+                                <li><strong style="font-size: 1.1em;">{{ allergy }}</strong></li>
+                            {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="mb-0">No known allergies recorded</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- CURRENT MEDICATIONS -->
+                    <h5 class="mt-4 mb-3">💊 Current Medications</h5>
+                    {% if patient.get('current_medications', []) %}
+                        <ul class="list-group mb-4">
+                        {% for med in patient.get('current_medications', []) %}
+                            <li class="list-group-item">
+                                <strong>{{ med }}</strong>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No medications recorded</p>
+                    {% endif %}
+
+                    <!-- MEDICAL HISTORY -->
+                    <h5 class="mb-3">📊 Medical History</h5>
+                    {% if patient.get('medical_history', []) %}
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                {% for condition in patient.get('medical_history', []) %}
+                                    <span class="badge bg-warning text-dark me-2">{{ condition }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No significant medical history recorded</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Medical Activity -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">📋 Recent Medical Activity</h5>
+                </div>
+                <div class="card-body">
+                    {% if patient.get('visits', []) %}
+                        <h6 class="mb-3">Recent Visits (Last 5)</h6>
+                        {% for visit in patient.get('visits', []) | reverse | list | first(5) %}
+                            <div class="border-bottom pb-3 mb-3">
+                                <p class="mb-1"><strong>📅 {{ visit.get('date', '') }}</strong></p>
+                                <p class="mb-1"><strong>Doctor:</strong> {{ visit.get('doctor', 'N/A') }}</p>
+                                <p class="mb-1"><strong>Diagnosis:</strong> {{ visit.get('diagnosis', 'N/A') }}</p>
+                                <p class="mb-0"><strong>Treatment:</strong> {{ visit.get('treatment', 'N/A') }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No recent visit records</p>
+                    {% endif %}
+
+                    {% if patient.get('prescriptions', []) %}
+                        <h6 class="mb-3 mt-4">Current Prescriptions</h6>
+                        <table class="table table-sm table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Dosage</th>
+                                    <th>Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for rx in patient.get('prescriptions', []) | reverse | list | first(5) %}
+                                <tr>
+                                    <td><strong>{{ rx.get('medicine', 'N/A') }}</strong></td>
+                                    <td>{{ rx.get('dosage', 'N/A') }}</td>
+                                    <td>{{ rx.get('duration', 'N/A') }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar: Quick Reference -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 position-sticky" style="top: 20px;">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">🚑 EMERGENCY PROTOCOL</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <h6 class="alert-heading">⚡ Quick Actions</h6>
+                        <ul class="mb-0 ps-3">
+                            <li>Check allergies FIRST</li>
+                            <li>Review current medications</li>
+                            <li>Consult medical history</li>
+                            <li>Contact emergency number if needed</li>
+                        </ul>
+                    </div>
+
+                    <h6 class="mt-4 mb-3">Patient Contact</h6>
+                    <p class="mb-1">
+                        <strong>Emergency:</strong><br>
+                        {{ patient.get('emergency_contact', 'N/A') }}
+                    </p>
+                    <p class="mb-1">
+                        <strong>Primary:</strong><br>
+                        {{ patient.get('contact', 'N/A') }}
+                    </p>
+
+                    <hr>
+
+                    <h6 class="mb-3">Access Information</h6>
+                    <p class="small text-muted mb-0">
+                        <strong>Patient ID:</strong><br>
+                        <code>{{ patient.get('id', '') }}</code>
+                    </p>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3" role="alert">
+                <strong>📞 Note:</strong> Contact emergency services immediately if the patient is in critical condition. 
+                This system provides supplementary information only and should not delay emergency response.
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+        <strong>❌ Patient Not Found</strong>
+        <p>The patient information could not be retrieved from the system. Please verify the QR code and try again.</p>
+    </div>
+    <a href="/" class="btn btn-secondary">← Back to Home</a>
+    {% endif %}
+</div>
+
+<style>
+    body {
+        background-color: #fff5f5;
+    }
+</style>
+{% endblock %}

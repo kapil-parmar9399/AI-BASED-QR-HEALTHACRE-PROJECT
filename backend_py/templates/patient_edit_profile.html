@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">✏️ Edit Personal Information</h2>
+            <p class="text-muted">Update your profile and medical information</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/patient/dashboard" class="btn btn-secondary">← Back</a>
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endif %}
+
+    {% if success %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        ✓ Information updated successfully!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <!-- Personal Information -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">👤 Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/patient/edit-profile">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ patient.get('name', '') }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ patient.get('email', '') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" name="age" 
+                                   value="{{ patient.get('age', '') }}" min="0" max="150">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="contact" class="form-label">Contact Number</label>
+                            <input type="tel" class="form-control" id="contact" name="contact" 
+                                   value="{{ patient.get('contact', '') }}" placeholder="10-digit mobile number">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="2">{{ patient.get('address', '') }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="blood_group" class="form-label">Blood Group</label>
+                            <select class="form-select" id="blood_group" name="blood_group">
+                                <option value="">-- Select Blood Group --</option>
+                                <option value="O+" {% if patient.get('blood_group') == 'O+' %}selected{% endif %}>O+</option>
+                                <option value="O-" {% if patient.get('blood_group') == 'O-' %}selected{% endif %}>O-</option>
+                                <option value="A+" {% if patient.get('blood_group') == 'A+' %}selected{% endif %}>A+</option>
+                                <option value="A-" {% if patient.get('blood_group') == 'A-' %}selected{% endif %}>A-</option>
+                                <option value="B+" {% if patient.get('blood_group') == 'B+' %}selected{% endif %}>B+</option>
+                                <option value="B-" {% if patient.get('blood_group') == 'B-' %}selected{% endif %}>B-</option>
+                                <option value="AB+" {% if patient.get('blood_group') == 'AB+' %}selected{% endif %}>AB+</option>
+                                <option value="AB-" {% if patient.get('blood_group') == 'AB-' %}selected{% endif %}>AB-</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="emergency_contact" class="form-label">Emergency Contact Number</label>
+                            <input type="tel" class="form-control" id="emergency_contact" name="emergency_contact" 
+                                   value="{{ patient.get('emergency_contact', '') }}" placeholder="In case of emergency">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">💾 Save Personal Information</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medical Information -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">🏥 Medical Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/patient/edit-medical">
+                        <div class="mb-3">
+                            <label for="medical_history" class="form-label">Medical History</label>
+                            <small class="text-muted d-block mb-2">Enter conditions separated by commas</small>
+                            <input type="text" class="form-control" id="medical_history" name="medical_history" 
+                                   value="{{ patient.get('medical_history', []) | join(', ') }}" 
+                                   placeholder="e.g., Diabetes, Hypertension, Asthma">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="allergies" class="form-label">Allergies</label>
+                            <small class="text-muted d-block mb-2">Enter allergies separated by commas</small>
+                            <input type="text" class="form-control" id="allergies" name="allergies" 
+                                   value="{{ patient.get('allergies', []) | join(', ') }}" 
+                                   placeholder="e.g., Penicillin, Aspirin">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="current_medications" class="form-label">Current Medications</label>
+                            <small class="text-muted d-block mb-2">Enter medications separated by commas</small>
+                            <input type="text" class="form-control" id="current_medications" name="current_medications" 
+                                   value="{{ patient.get('current_medications', []) | join(', ') }}" 
+                                   placeholder="e.g., Lisinopril 10mg, Metformin 500mg">
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">💾 Save Medical Information</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Current Information Display -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">📋 Current Medical Summary</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Medical Conditions:</strong></p>
+                    {% if patient.get('medical_history', []) %}
+                        <div class="mb-3">
+                        {% for cond in patient.get('medical_history', []) %}
+                            <span class="badge bg-warning text-dark me-1">{{ cond }}</span>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-3">None recorded</p>
+                    {% endif %}
+
+                    <p class="mb-2"><strong>Allergies:</strong></p>
+                    {% if patient.get('allergies', []) %}
+                        <div class="mb-3">
+                        {% for allergy in patient.get('allergies', []) %}
+                            <span class="badge bg-danger me-1">{{ allergy }}</span>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-3">None recorded</p>
+                    {% endif %}
+
+                    <p class="mb-2"><strong>Current Medications:</strong></p>
+                    {% if patient.get('current_medications', []) %}
+                        <ul class="mb-0">
+                        {% for med in patient.get('current_medications', []) %}
+                            <li>{{ med }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">None recorded</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

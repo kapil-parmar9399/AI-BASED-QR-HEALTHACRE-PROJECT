@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">💊 Add Prescription</h2>
+            <p class="text-muted">Add your current medication details</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/patient/records" class="btn btn-sm btn-secondary">← Back to Records</a>
+        </div>
+    </div>
+
+    {% if success %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>✅ Success!</strong> Prescription added successfully.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endif %}
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <form method="POST" class="needs-validation">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><strong>💊 Medicine Name</strong> <span class="text-danger">*</span></label>
+                           <input type="text" class="form-control" name="medicine" required 
+                               placeholder="e.g., Aspirin, Metformin" value="">
+                        <small class="text-muted">Name of the medicine/drug</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><strong>📊 Dosage</strong> <span class="text-danger">*</span></label>
+                           <input type="text" class="form-control" name="dosage" required 
+                               placeholder="e.g., 500mg, 1 tablet, 5ml" value="">
+                        <small class="text-muted">Strength and quantity per dose</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><strong>⏱️ Duration</strong> <span class="text-danger">*</span></label>
+                           <input type="text" class="form-control" name="duration" required 
+                               placeholder="e.g., 30 days, 3 months" value="">
+                        <small class="text-muted">How long to take this medicine</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><strong>🏥 Prescribed By (Optional)</strong></label>
+                           <input type="text" class="form-control" name="prescribed_by" 
+                               placeholder="e.g., Dr. Rajesh Kumar" value="">
+                        <small class="text-muted">Doctor's name or hospital name</small>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>📝 Notes / Instructions (Optional)</strong></label>
+                    <textarea class="form-control" name="notes" rows="3" 
+                              placeholder="e.g., Take with food, Avoid dairy products"></textarea>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="/patient/records" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus"></i> Add Prescription
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Info box -->
+    <div class="card bg-light mt-4 border-0">
+        <div class="card-body">
+            <h6 class="card-title">ℹ️ Tip: How to fill this form</h6>
+            <ul class="mb-0">
+                <li><strong>Medicine Name:</strong> The exact name of the drug you're taking</li>
+                <li><strong>Dosage:</strong> The strength (e.g., 500mg) and quantity (e.g., 1 tablet)</li>
+                <li><strong>Duration:</strong> How long you need to take this medication</li>
+                <li><strong>Prescribed By:</strong> Which doctor or hospital gave you this prescription</li>
+                <li><strong>Notes:</strong> Any special instructions (with food, timing, precautions, etc.)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

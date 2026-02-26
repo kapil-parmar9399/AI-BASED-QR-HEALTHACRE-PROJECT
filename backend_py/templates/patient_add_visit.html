@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">📋 Add Visit Record</h2>
+            <p class="text-muted">Log your doctor visit and diagnosis details</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/patient/records" class="btn btn-sm btn-secondary">← Back to Records</a>
+        </div>
+    </div>
+
+    {% if success %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>✅ Success!</strong> Visit record added successfully.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endif %}
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <form method="POST" class="needs-validation">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><strong>🏥 Doctor Name</strong> <span class="text-danger">*</span></label>
+                           <input type="text" class="form-control" name="doctor" required 
+                               placeholder="e.g., Dr. Rajesh Kumar" value="">
+                        <small class="text-muted">Name of the doctor you visited</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><strong>📅 Visit Date</strong> <span class="text-danger">*</span></label>
+                           <input type="date" class="form-control" name="visit_date" required 
+                               value="">
+                        <small class="text-muted">Date of the visit</small>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>🩺 Diagnosis / Complaint</strong> <span class="text-danger">*</span></label>
+                    <textarea class="form-control" name="diagnosis" rows="3" required 
+                              placeholder="e.g., Fever and cough, High blood pressure, Migraine"></textarea>
+                    <small class="text-muted">What was the reason for the visit?</small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>💊 Treatment / Advice</strong> <span class="text-danger">*</span></label>
+                    <textarea class="form-control" name="treatment" rows="3" required 
+                              placeholder="e.g., Prescribed antibiotics, Rest for 2 days, Use paracetamol"></textarea>
+                    <small class="text-muted">What treatment or advice was given?</small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>📝 Additional Notes (Optional)</strong></label>
+                    <textarea class="form-control" name="notes" rows="2" 
+                              placeholder="e.g., Follow-up needed in 1 week, Lab tests ordered"></textarea>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="/patient/records" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus"></i> Add Visit Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Info box -->
+    <div class="card bg-light mt-4 border-0">
+        <div class="card-body">
+            <h6 class="card-title">ℹ️ Tip: How to fill this form</h6>
+            <ul class="mb-0">
+                <li><strong>Doctor Name:</strong> The doctor you visited (with or without "Dr.")</li>
+                <li><strong>Visit Date:</strong> When you had this visit</li>
+                <li><strong>Diagnosis:</strong> What symptoms or problems did you have?</li>
+                <li><strong>Treatment:</strong> What medicines or advice were you given?</li>
+                <li><strong>Notes:</strong> Any follow-up appointments or important instructions</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

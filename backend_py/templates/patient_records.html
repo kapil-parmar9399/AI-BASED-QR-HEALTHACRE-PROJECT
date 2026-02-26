@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">📋 My Medical Records</h2>
+            <p class="text-muted">View and download your prescriptions and reports</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/patient/dashboard" class="btn btn-sm btn-secondary">← Back</a>
+        </div>
+    </div>
+
+    <!-- Prescriptions -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">💊 Prescriptions</h5>
+            <a href="/patient/add-prescription" class="btn btn-sm btn-light">➕ Add Prescription</a>
+        </div>
+        <div class="card-body">
+            {% if patient.get('prescriptions', []) %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Medicine</th>
+                                <th>Dosage</th>
+                                <th>Duration</th>
+                                <th>Prescribed By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for rx in patient.get('prescriptions', []) %}
+                            <tr>
+                                <td>{{ rx.get('date', '')[:10] }}</td>
+                                <td><strong>{{ rx.get('medicine', 'N/A') }}</strong></td>
+                                <td>{{ rx.get('dosage', 'N/A') }}</td>
+                                <td>{{ rx.get('duration', 'N/A') }}</td>
+                                <td>{{ rx.get('prescribed_by', 'N/A') }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">No prescriptions available</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Medical Reports -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">📄 Medical Reports</h5>
+        </div>
+        <div class="card-body">
+            {% if patient.get('reports', []) %}
+                <div class="row">
+                {% for report in patient.get('reports', []) %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-light">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="mb-1"><strong>📎 {{ report.get('filename', 'Report') }}</strong></p>
+                                    <small class="text-muted">{{ report.get('uploaded_at', '')[:10] }}</small>
+                                </div>
+                                <a href="{{ report.get('path', '#') }}" class="btn btn-sm btn-outline-primary" download>
+                                    ⬇️ Download
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">No reports available</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Visits & Diagnosis History -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">📈 Visit History</h5>
+            <a href="/patient/add-visit" class="btn btn-sm btn-light">➕ Add Visit</a>
+        </div>
+        <div class="card-body">
+            {% if patient.get('visits', []) %}
+                {% for visit in patient.get('visits', []) | reverse %}
+                    <div class="border-bottom pb-3 mb-3">
+                        <h6 class="mb-2">📅 {{ visit.get('date', '')[:10] }}</h6>
+                        <p class="mb-1"><strong>Doctor:</strong> {{ visit.get('doctor', 'N/A') }}</p>
+                        <p class="mb-1"><strong>Diagnosis:</strong> {{ visit.get('diagnosis', 'N/A') }}</p>
+                        <p class="mb-0"><strong>Treatment:</strong> {{ visit.get('treatment', 'N/A') }}</p>
+                        {% if visit.get('notes') %}
+                            <p class="mt-2 mb-0"><small class="text-muted">{{ visit.get('notes') }}</small></p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0">No visit records available</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
