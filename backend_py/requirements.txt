@@ -11,7 +11,7 @@ python-multipart==0.0.6
 itsdangerous==2.1.2
 qrcode[pil]==7.4.2
 pillow==12.1.1
-numpy==1.24.3
+numpy==2.3.5
 twilio==8.10.0
 pyngrok==5.2.3
 slowapi==0.1.9
