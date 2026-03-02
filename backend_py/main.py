@@ -351,6 +351,7 @@ def on_startup():
 @app.get("/")
 def index(request: Request):
     user = request.session.get("user")
+    print(f"User '{user}' accessed home page")
     user_role = request.session.get("role")
     return templates.TemplateResponse("home.html", {"request": request, "user": user, "role": user_role})
 
@@ -1268,6 +1269,100 @@ def upload_file(request: Request, patient_id: str = Form(...), file: UploadFile 
     db.users.update_one({"_id": pid}, {"$push": {"reports": meta}})
     
     return RedirectResponse(url='/patients', status_code=303)
+
+
+@app.get("/privacy")
+def privacy(request: Request):
+    return templates.TemplateResponse(
+        "privacy.html",
+        {"request": request}
+    )
+
+from fastapi import Form
+from datetime import datetime
+
+# Contact Page (GET)
+@app.get("/contact")
+def contact_page(request: Request):
+    return templates.TemplateResponse(
+        "contact.html",
+        {"request": request}
+    )
+
+
+# Contact Form Submit (POST)
+@app.post("/contact")
+def submit_contact(
+    request: Request,
+    name: str = Form(...),
+    email: str = Form(...),
+    message: str = Form(...)
+):
+    db.contacts.insert_one({
+        "name": name,
+        "email": email,
+        "message": message,
+        "created_at": datetime.utcnow()
+    })
+
+    return templates.TemplateResponse(
+        "contact.html",
+        {
+            "request": request,
+            "success": "Message sent successfully!"
+        }
+    )
+@app.get("/admin/contact-messages")
+def view_contact_messages(request: Request):
+
+    messages = list(
+        db.contacts.find().sort("created_at", -1)
+    )
+
+    return templates.TemplateResponse(
+        "admin_contact_messages.html",
+        {
+            "request": request,
+            "messages": messages
+        }
+    )
+    
+    
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import RedirectResponse
+from bson import ObjectId
+
+# Ensure db is already defined: db = client[DATABASE_NAME]
+
+from fastapi.responses import RedirectResponse
+from bson import ObjectId
+from fastapi import HTTPException, Request
+
+@app.post("/admin/contact/delete/{msg_id}")
+async def delete_contact_message(msg_id: str, request: Request):
+    # Admin access check
+    role = request.session.get("role")
+    if role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    # Use same collection as in view
+    contact_collection = db.contacts  # Ensure collection name matches view
+
+    # Convert string to ObjectId
+    try:
+        obj_id = ObjectId(msg_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid message ID")
+
+    # Delete the document
+    result = contact_collection.delete_one({"_id": obj_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Message not found")
+
+    # Redirect back to contact messages page
+    return RedirectResponse(url="/admin/contact-messages", status_code=303)
+
+
 
 
 # API endpoints

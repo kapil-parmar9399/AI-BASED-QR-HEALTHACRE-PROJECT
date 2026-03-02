@@ -1,4 +1,5 @@
 /* ===== ROOT VARIABLES ===== */
+
 :root {
     --primary: #4f46e5;
     --primary-2: #7c3aed;
@@ -11,13 +12,17 @@
     --bg: #f8fafc;
 }
 
+
 /* ===== GLOBAL STYLES ===== */
+
 html,
 body {
     height: 100%;
 }
 
+
 /* Nav links should be bold and use primary color */
+
 .navbar-nav .nav-link {
     color: var(--primary) !important;
     font-weight: 600 !important;
@@ -34,7 +39,9 @@ body {
     color: var(--primary-dark) !important;
 }
 
+
 /* OVERRIDE Bootstrap nav-link for btn-nav */
+
 .navbar-nav .nav-link.btn-nav {
     background: linear-gradient(90deg, var(--primary) 0%, var(--primary-2) 100%) !important;
     color: #ffffff !important;
@@ -74,7 +81,7 @@ body {
     display: inline-block !important;
     text-decoration: none !important;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-brand:hover {
@@ -84,9 +91,12 @@ body {
     text-decoration: none !important;
 }
 
+
 /* ===== COMPREHENSIVE BUTTON STYLING ===== */
 
+
 /* Base button styles - override ALL Bootstrap buttons */
+
 .btn {
     border: none !important;
     border-radius: 8px !important;
@@ -109,7 +119,9 @@ body {
     opacity: 1 !important;
 }
 
+
 /* PRIMARY BUTTON - BLUE GRADIENT */
+
 .btn-primary,
 .btn.btn-primary {
     background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%) !important;
@@ -137,7 +149,9 @@ body {
     color: #fff !important;
 }
 
+
 /* SUCCESS BUTTON - GREEN GRADIENT */
+
 .btn-success,
 .btn.btn-success {
     background: linear-gradient(90deg, #10b981 0%, #059669 100%) !important;
@@ -165,7 +179,9 @@ body {
     color: #fff !important;
 }
 
+
 /* WARNING BUTTON - ORANGE GRADIENT */
+
 .btn-warning,
 .btn.btn-warning {
     background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%) !important;
@@ -193,7 +209,9 @@ body {
     color: #fff !important;
 }
 
+
 /* DANGER BUTTON - RED GRADIENT */
+
 .btn-danger,
 .btn.btn-danger {
     background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%) !important;
@@ -221,7 +239,9 @@ body {
     color: #fff !important;
 }
 
+
 /* INFO BUTTON - CYAN GRADIENT */
+
 .btn-info,
 .btn.btn-info {
     background: linear-gradient(90deg, #06b6d4 0%, #0891b2 100%) !important;
@@ -249,7 +269,9 @@ body {
     color: #fff !important;
 }
 
+
 /* Size variants */
+
 .btn-lg,
 .btn.btn-lg {
     padding: 0.875rem 2rem !important;
@@ -262,7 +284,9 @@ body {
     font-size: 0.875rem !important;
 }
 
+
 /* CTA buttons */
+
 .d-flex.gap-2 {
     z-index: 10 !important;
     position: relative !important;
@@ -290,7 +314,9 @@ body {
     background: linear-gradient(90deg, #3730a3 0%, #7c3aed 100%) !important;
 }
 
+
 /* Outline buttons (white outline for dark backgrounds) */
+
 .btn-cta.btn-outline,
 .btn-outline {
     background: transparent !important;
@@ -310,10 +336,10 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
 }
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
-}
+
 
 /* Dark outline buttons */
+
 .btn-outline-primary,
 .btn-outline-danger,
 .btn-outline-success,
@@ -378,11 +404,13 @@ body {
     text-decoration: none !important;
 }
 
+
 /* ===== HERO SECTION ===== */
+
 .hero {
     position: relative;
     overflow: visible;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 50%, #6d28d9 100%);
+    /* background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 50%, #6d28d9 100%); */
     padding: 80px 40px !important;
     border-radius: 20px;
     min-height: auto;
@@ -402,31 +430,32 @@ body {
     visibility: visible !important;
 }
 
-.hero .col-lg-7 .d-flex {
+
+/* .hero .col-lg-7 .d-flex {
     z-index: 10 !important;
     position: relative !important;
     gap: 1rem !important;
-}
+} */
 
-.hero:before {
+.hero {
     content: '';
-    position: absolute;
-    width: 520px;
-    height: 520px;
-    right: -120px;
+    /* position: absolute; */
+    width: 500px;
+    height: 500px;
+    /* right: -120px;
     top: -140px;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.12), transparent 30%);
-    transform: rotate(15deg);
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.12), transparent 30%); */
+    /* transform: rotate(15deg); */
 }
 
 .hero:after {
     content: '';
-    position: absolute;
+    /* position: absolute; */
     width: 360px;
     height: 360px;
-    left: -60px;
-    bottom: -60px;
-    background: radial-gradient(circle at 60% 40%, rgba(255, 255, 255, 0.06), transparent 30%);
+    /* left: -60px;
+    bottom: -60px; */
+    /* background: radial-gradient(circle at 60% 40%, rgba(255, 255, 255, 0.06), transparent 30%); */
     filter: blur(20px);
     pointer-events: none;
 }
@@ -437,9 +466,9 @@ body {
     line-height: 1.1;
     margin-bottom: 12px;
     color: #ffffff !important;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     z-index: 10;
-    position: relative;
+    /* position: relative; */
     font-family: 'Courier New', 'Monaco', monospace !important;
     letter-spacing: 0.05em !important;
 }
@@ -463,18 +492,25 @@ body {
     background: #ffffff !important;
     padding: 24px !important;
     border-radius: 18px !important;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.12) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12) !important;
     max-width: 400px !important;
     margin: 0 auto !important;
     z-index: 10;
     position: relative;
-    animation: float 3s ease-in-out infinite;
+    /* animation: float 3s ease-in-out infinite; */
 }
 
+
+/* 
 @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-}
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(0px);
+    }
+} */
 
 .hero-card img {
     max-width: 100% !important;
@@ -527,7 +563,9 @@ body {
     opacity: 0.9;
 }
 
+
 /* ===== CTA SECTION ===== */
+
 .cta-section {
     background: linear-gradient(180deg, #eef2ff, #fff);
     padding: 36px;
@@ -535,7 +573,9 @@ body {
     box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
 }
 
+
 /* ===== TESTIMONIALS ===== */
+
 .testimonial {
     background: #fff;
     border-radius: 12px;
@@ -553,12 +593,16 @@ body {
     margin-top: 10px;
 }
 
+
 /* Sidebar removed - layout simplified */
+
 .main-content {
     margin-left: 0 !important;
 }
 
+
 /* Footer styling */
+
 .footer {
     background: linear-gradient(135deg, var(--primary), var(--primary-2));
     color: #fff;
@@ -576,7 +620,9 @@ body {
     text-decoration: underline;
 }
 
+
 /* UTILITY CLASSES */
+
 .muted {
     color: var(--muted);
 }
