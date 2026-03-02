@@ -150,7 +150,7 @@ def get_public_base_url(request: Request = None) -> str:
     """
     global ngrok_tunnel_url
     # 1. explicit override
-    url = os.getenv('PUBLIC_URL')
+    url = "https://ai-qr-healthcare.onrender.com"
     if url:
         return url.rstrip('/')
 
