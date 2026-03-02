@@ -534,7 +534,7 @@ def regenerate_token(request: Request):
         # determine link base (PUBLIC_URL, ngrok, etc.)
         base = get_public_base_url(request)
         public_url = f"{base}/p/{profile.get('_id')}"
-        public_link = f"{public_url}?t={token}"
+        public_link = f"https://ai-qr-healthcare.onrender.com/"
 
         sent = {'email': False, 'sms': False}
         # send email
