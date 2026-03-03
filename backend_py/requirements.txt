@@ -1,7 +1,37 @@
+# pip>=23.2.1
+# setuptools>=68.0.0
+# wheel
+# fastapi==0.104.1
+# uvicorn[standard]==0.24.0
+# pymongo==4.6.0
+# python-dotenv==1.0.0
+# bcrypt==4.1.1
+# jinja2==3.1.2
+# python-multipart==0.0.6
+# itsdangerous==2.1.2
+# qrcode[pil]==7.4.2
+# pillow==12.1.1
+# numpy==2.3.5
+# twilio==8.10.0
+# pyngrok==5.2.3
+# slowapi==0.1.9
+# pydantic-settings==2.1.0
+# requests==2.31.0
+# # pydantic==2.5.0
+# pytest==7.4.0
+# httpx==0.24.1
+# pydantic<2
+# pydantic-core<2
+
+# # Production dependencies
+# gunicorn==21.2.0
+# python-jose[cryptography]==3.3.0
+
+
 pip>=23.2.1
 setuptools>=68.0.0
 wheel
-fastapi==0.104.1
+fastapi==0.111.2               # upgraded to support Pydantic 2.x
 uvicorn[standard]==0.24.0
 pymongo==4.6.0
 python-dotenv==1.0.0
@@ -17,11 +47,10 @@ pyngrok==5.2.3
 slowapi==0.1.9
 pydantic-settings==2.1.0
 requests==2.31.0
-# pydantic==2.5.0
+pydantic>=2.5.0                # remove <2 restriction
 pytest==7.4.0
 httpx==0.24.1
-pydantic<2
-pydantic-core<2
+pydantic-core>=2.5.0           # match Pydantic v2
 
 # Production dependencies
 gunicorn==21.2.0
