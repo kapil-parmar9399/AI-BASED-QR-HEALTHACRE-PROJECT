@@ -17,7 +17,7 @@ pyngrok==5.2.3
 slowapi==0.1.9
 pydantic-settings==2.1.0
 requests==2.31.0
-pydantic==2.5.0
+# pydantic==2.5.0
 pytest==7.4.0
 httpx==0.24.1
 pydantic<2
