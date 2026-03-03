@@ -20,6 +20,8 @@ requests==2.31.0
 pydantic==2.5.0
 pytest==7.4.0
 httpx==0.24.1
+pydantic<2
+pydantic-core<2
 
 # Production dependencies
 gunicorn==21.2.0
