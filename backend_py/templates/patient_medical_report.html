@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h2 class="mb-4">🩺 AI Medical Report</h2>
+
+    <!-- 🚨 Emergency Alert -->
+    {% if health_analysis.emergency %}
+    <div class="alert alert-danger text-center">
+        <h4>🚨 EMERGENCY ALERT</h4>
+        <p>{{ health_analysis.emergency_message }}</p>
+        <strong>Please visit nearest hospital immediately.</strong>
+    </div>
+    {% endif %}
+
+    <!-- Risk Summary -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h4>
+                Risk Level:
+                <span class="fw-bold 
+                    {% if health_analysis.risk_level == 'High' %} text-danger
+                    {% elif health_analysis.risk_level == 'Medium' %} text-warning
+                    {% else %} text-success {% endif %}">
+                    {{ health_analysis.risk_level }}
+                </span>
+            </h4>
+
+            <p class="mt-2">
+                <strong>Risk Score:</strong> {{ health_analysis.risk_score }}
+            </p>
+
+            <p>
+                <strong>Risk Percentage:</strong> {{ health_analysis.risk_percentage }}%
+            </p>
+        </div>
+    </div>
+
+    <!-- Risk Percentage Graph -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light">
+            Risk Percentage Chart
+        </div>
+        <div class="card-body">
+            <canvas id="riskChart"></canvas>
+            <!-- PDF Download Button -->
+            <a href="/{{ pdf_file }}" class="btn btn-success mt-3">📄 Download PDF</a>
+        </div>
+    </div>
+
+    <!-- Possible Diseases -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light">
+            Possible Diseases
+        </div>
+        <div class="card-body">
+            <ul>
+                {% for cond in health_analysis.possible_diseases %}
+                <li>{{ cond }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light">
+            Recommendations
+        </div>
+        <div class="card-body">
+            <ul>
+                {% for rec in health_analysis.recommendations %}
+                <li>{{ rec }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Doctor, Diet, Medicine -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light">
+            Doctor & Suggestions
+        </div>
+        <div class="card-body">
+            <p><strong>Suggested Doctor:</strong> {{ health_analysis.doctor }}</p>
+            <p><strong>Diet Plan:</strong> {{ health_analysis.diet }}</p>
+            <p><strong>Medicine Suggestion:</strong> 
+                <ul>
+                    {% for med in health_analysis.medicine %}
+                    <li>{{ med }}</li>
+                    {% endfor %}
+                </ul>
+            </p>
+        </div>
+    </div>
+
+    <a href="/patient/dashboard" class="btn btn-primary">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+<!-- Chart JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('riskChart').getContext('2d');
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Risk %', 'Remaining'],
+        datasets: [{
+            data: [
+                {{ health_analysis.risk_percentage }},
+                {{ 100 - health_analysis.risk_percentage }}
+            ],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(200, 200, 200, 0.3)'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: true }
+        }
+    }
+});
+</script>
+
+{% endblock %}

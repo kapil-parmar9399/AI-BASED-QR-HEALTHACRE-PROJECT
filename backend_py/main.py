@@ -23,6 +23,11 @@ import base64
 import numpy as np
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+from health_utils import analyze_health_ai
+from doctor_engine import suggest_doctor
+from diet_engine import generate_diet
+from medicine_engine import suggest_medicine
+from pdf_generator import generate_pdf
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
@@ -348,6 +353,145 @@ def on_startup():
     seed_db()
 
 
+# backend_py/main.py
+
+
+# from fastapi.templating import Jinja2Templates
+
+# templates = Jinja2Templates(directory="templates")
+
+# # Example AI health analysis function
+# def analyze_health(patient_data: dict) -> dict:
+#     """Basic AI health analysis based on patient data"""
+#     analysis = {
+#         "age_risk": "Low",
+#         "pattern": "Stable",
+#         "recommendations": []
+#     }
+    
+#     age = patient_data.get("age", 0)
+#     if age > 60:
+#         analysis["age_risk"] = "High"
+#         analysis["recommendations"].append("Regular cardiovascular checkup recommended")
+#     elif age > 45:
+#         analysis["age_risk"] = "Medium"
+#         analysis["recommendations"].append("Annual health checkup advised")
+    
+#     visits = len(patient_data.get("visits", []))
+#     if visits > 5:
+#         analysis["pattern"] = "Frequent - Monitor closely"
+#         analysis["recommendations"].append("Consider specialist consultation")
+#     elif visits > 2:
+#         analysis["pattern"] = "Moderate - Normal"
+    
+#     history = patient_data.get("medical_history", [])
+#     if history:
+#         analysis["recommendations"].append(f"Continuing treatment for {len(history)} condition(s)")
+    
+#     if not analysis["recommendations"]:
+#         analysis["recommendations"].append("Maintain regular checkups")
+    
+#     return analysis
+
+# Route for AI Medical Report
+# @app.get("/patient/medical-report", response_class=HTMLResponse)
+# async def patient_medical_report(request: Request):
+#     # Fetch patient data from your DB
+#     # For example:
+#     patient = db.patients.find_one({"email": request.session.get("user_email")})
+#     if not patient:
+#         return templates.TemplateResponse("error.html", {"request": request, "message": "Patient not found"})
+
+#     # Run AI analysis
+#     analysis = analyze_health(patient)
+
+#     return templates.TemplateResponse(
+#         "medical_report.html",
+#         {"request": request, "patient": patient, "analysis": analysis}
+#     )
+
+# from fastapi import Request
+# from fastapi.responses import HTMLResponse, RedirectResponse
+# from fastapi.templating import Jinja2Templates
+
+templates = Jinja2Templates(directory="templates")
+
+# # Example AI health analysis function
+# def analyze_health(patient_data: dict) -> dict:
+#     """Basic AI health analysis based on patient data"""
+#     analysis = {
+#         "age_risk": "Low",
+#         "pattern": "Stable",
+#         "recommendations": []
+#     }
+    
+#     age = patient_data.get("age", 0)
+#     if age > 60:
+#         analysis["age_risk"] = "High"
+#         analysis["recommendations"].append("Regular cardiovascular checkup recommended")
+#     elif age > 45:
+#         analysis["age_risk"] = "Medium"
+#         analysis["recommendations"].append("Annual health checkup advised")
+    
+#     visits = len(patient_data.get("visits", []))
+#     if visits > 5:
+#         analysis["pattern"] = "Frequent - Monitor closely"
+#         analysis["recommendations"].append("Consider specialist consultation")
+#     elif visits > 2:
+#         analysis["pattern"] = "Moderate - Normal"
+    
+#     history = patient_data.get("medical_history", [])
+#     if history:
+#         analysis["recommendations"].append(f"Continuing treatment for {len(history)} condition(s)")
+    
+#     if not analysis["recommendations"]:
+#         analysis["recommendations"].append("Maintain regular checkups")
+    
+#     return analysis
+
+# Route for AI Medical Report
+from health_utils import analyze_health_ai
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import Request
+
+@app.get("/patient/medical-report")
+def patient_medical_report(request: Request):
+    user = request.session.get("user")
+    if not user:
+        return RedirectResponse(url='/login', status_code=303)
+
+    # Patient data from DB
+    patient = db.users.find_one({"username": user})
+    patient = oid_to_str(patient) if patient else {}
+
+    # Step 10 logic: AI Analysis + Doctor + Diet + Medicine
+    analysis = analyze_health_ai(patient)
+    doctor = suggest_doctor(analysis["possible_diseases"])
+    diet = generate_diet(analysis["possible_diseases"])
+    medicine = suggest_medicine(analysis["possible_diseases"])
+
+    # Add these to analysis dict
+    analysis["doctor"] = doctor
+    analysis["diet"] = diet
+    analysis["medicine"] = medicine
+
+    # Emergency alert message (optional)
+    if analysis["emergency"]:
+        analysis["emergency_message"] = "Immediate medical attention required!"
+
+    # Step 4: PDF generation (optional: filename by username)
+    pdf_filename = f"{user}_medical_report.pdf"
+    generate_pdf(patient, analysis, filename=pdf_filename)
+
+    return templates.TemplateResponse(
+        "patient_medical_report.html",
+        {
+            "request": request,
+            "patient": patient,
+            "health_analysis": analysis,
+            "pdf_file": pdf_filename  # template me download button ke liye
+        }
+    )
 @app.get("/")
 def index(request: Request):
     user = request.session.get("user")
@@ -661,7 +805,12 @@ def edit_profile_post(request: Request,
                       contact: str = Form(""),
                       blood_group: str = Form(""),
                       address: str = Form(""),
-                      emergency_contact: str = Form("")):
+                      emergency_contact: str = Form(""),
+                      blood_pressure: Optional[int] = Form(None),
+                      sugar_level: Optional[int] = Form(None),
+                      cholesterol: Optional[int] = Form(None),
+                      bmi: Optional[float] = Form(None),
+                      symptoms: str = Form("")):  # comma separated
     user = request.session.get("user")
     role = request.session.get("role")
     if not user or role != "patient":
@@ -670,7 +819,7 @@ def edit_profile_post(request: Request,
     if db is None:
         return RedirectResponse(url='/patient/edit-profile', status_code=303)
     
-    # Update user document
+    # Prepare update dictionary
     update_data = {
         "name": name,
         "email": email,
@@ -678,12 +827,17 @@ def edit_profile_post(request: Request,
         "contact": contact,
         "blood_group": blood_group,
         "address": address,
-        "emergency_contact": emergency_contact
+        "emergency_contact": emergency_contact,
+        "blood_pressure": blood_pressure,
+        "sugar_level": sugar_level,
+        "cholesterol": cholesterol,
+        "bmi": bmi,
+        "symptoms": [s.strip() for s in symptoms.split(",")] if symptoms else []
     }
     
     db.users.update_one({"username": user}, {"$set": update_data})
     
-    # Fetch updated patient and return with success message
+    # Fetch updated patient
     patient = db.users.find_one({"username": user})
     patient = oid_to_str(patient) if patient else {}
     
@@ -693,7 +847,6 @@ def edit_profile_post(request: Request,
         "patient": patient,
         "success": True
     })
-
 
 @app.post("/patient/edit-medical")
 def edit_medical_post(request: Request,
@@ -1451,16 +1604,56 @@ def patients_view(request: Request):
     return templates.TemplateResponse("patients.html", {"request": request, "user": user, "patients": items})
 
 
+# @app.post("/patients/add")
+# def add_patient(request: Request, name: str = Form(...), age: int = Form(...), notes: str = Form("")):
+#     user = request.session.get("user")
+#     if not user:
+#         return RedirectResponse(url='/login', status_code=303)
+#     if db is not None:
+#         db.patients.insert_one({"name": name, "age": age, "notes": notes})
+#     return RedirectResponse(url='/patients', status_code=303)
+
 @app.post("/patients/add")
-def add_patient(request: Request, name: str = Form(...), age: int = Form(...), notes: str = Form("")):
+def add_patient(
+    request: Request,
+    name: str = Form(...),
+    age: int = Form(...),
+    contact: str = Form(""),
+    email: str = Form(""),
+    address: str = Form(""),
+    blood_group: str = Form(""),
+    emergency_contact: str = Form(""),
+    blood_pressure: int = Form(0),
+    sugar_level: int = Form(0),
+    cholesterol: int = Form(0),
+    bmi: float = Form(0.0),
+    symptoms: str = Form(""),
+    notes: str = Form("")
+):
     user = request.session.get("user")
     if not user:
         return RedirectResponse(url='/login', status_code=303)
+
+    patient_data = {
+        "name": name,
+        "age": age,
+        "contact": contact,
+        "email": email,
+        "address": address,
+        "blood_group": blood_group,
+        "emergency_contact": emergency_contact,
+        "blood_pressure": blood_pressure,
+        "sugar_level": sugar_level,
+        "cholesterol": cholesterol,
+        "bmi": bmi,
+        "symptoms": [s.strip() for s in symptoms.split(",")] if symptoms else [],
+        "notes": notes
+    }
+
     if db is not None:
-        db.patients.insert_one({"name": name, "age": age, "notes": notes})
+        db.patients.insert_one(patient_data)
+
     return RedirectResponse(url='/patients', status_code=303)
-
-
 @app.get('/doctors')
 def doctors_view(request: Request):
     user = request.session.get('user')

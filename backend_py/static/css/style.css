@@ -635,3 +635,126 @@ body {
         font-size: 1.6rem;
     }
 }
+
+
+/* ============================
+   PATIENT DASHBOARD BUTTONS - FINAL
+   ============================ */
+
+
+/* Parent row: gap + flex wrap */
+
+.patient-btn-row,
+.row.g-3 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    /* uniform horizontal & vertical gap */
+}
+
+
+/* Each column wrapper: flex + equal height */
+
+.feature-card-wrapper,
+.col-md-6.col-lg-4.d-flex {
+    display: flex;
+    flex: 1 1 calc(33.333% - 1rem);
+    /* 3 per row */
+    max-width: calc(33.333% - 1rem);
+}
+
+
+/* Card: full height, column layout */
+
+.feature-card,
+.card.shadow-sm.flex-fill.d-flex.flex-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* button at bottom */
+    width: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+/* Card hover effect */
+
+.feature-card:hover,
+.card.shadow-sm.flex-fill.d-flex.flex-column:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+
+/* Card body: stretch content inside */
+
+.feature-card .card-body,
+.card-body.d-flex.flex-column.justify-content-between {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+
+/* Buttons: small, bottom aligned */
+
+.patient-btn {
+    margin-top: auto;
+    /* push to bottom */
+    align-self: center;
+    /* horizontally center */
+    position: relative;
+    overflow: hidden;
+    /* ripple inside */
+    z-index: 1;
+    border-radius: 6px;
+    padding: 6px 18px;
+    /* btn-sm size */
+    font-size: 0.875rem;
+    transition: all 0.25s ease;
+    min-width: auto;
+    /* prevents oversized buttons */
+}
+
+
+/* Ripple effect */
+
+.patient-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400%;
+    height: 400%;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transform-origin: center center;
+    transition: transform 0.45s ease;
+    z-index: 0;
+}
+
+
+/* Hover ripple */
+
+.patient-btn:hover::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+
+/* Button hover effect */
+
+.patient-btn:hover {
+    z-index: 2;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Button active effect */
+
+.patient-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
