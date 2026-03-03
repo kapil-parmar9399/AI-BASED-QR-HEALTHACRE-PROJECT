@@ -28,30 +28,52 @@
 # python-jose[cryptography]==3.3.0
 
 
+# Core Python packages
 pip>=23.2.1
 setuptools>=68.0.0
 wheel
-fastapi==0.111.2               # upgraded to support Pydantic 2.x
+
+# FastAPI and ASGI server
+fastapi==0.117.0
 uvicorn[standard]==0.24.0
+
+# Database
 pymongo==4.6.0
+
+# Environment
 python-dotenv==1.0.0
+
+# Security & Auth
 bcrypt==4.1.1
+python-jose[cryptography]==3.3.0
+itsdangerous==2.1.2
+
+# Frontend & Forms
 jinja2==3.1.2
 python-multipart==0.0.6
-itsdangerous==2.1.2
+
+# QR Code & Images
 qrcode[pil]==7.4.2
 pillow==12.1.1
+
+# Math & Networking
 numpy==2.3.5
+requests==2.31.0
+httpx==0.24.1
 twilio==8.10.0
 pyngrok==5.2.3
-slowapi==0.1.9
-pydantic-settings==2.1.0
-requests==2.31.0
-pydantic>=2.5.0                # remove <2 restriction
-pytest==7.4.0
-httpx==0.24.1
-pydantic-core>=2.5.0           # match Pydantic v2
 
-# Production dependencies
+# Rate Limiting
+slowapi==0.1.9
+limits>=2.3
+
+# Pydantic & Settings (v2 compatible)
+pydantic>=2.5
+pydantic-core>=2.5
+pydantic-settings==2.1.0
+
+# Testing
+pytest==7.4.0
+
+# Production
 gunicorn==21.2.0
-python-jose[cryptography]==3.3.0
