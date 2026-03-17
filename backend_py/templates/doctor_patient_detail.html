@@ -140,8 +140,31 @@
                             <label for="notes" class="form-label">Additional Notes</label>
                             <textarea class="form-control" id="notes" name="notes" rows="2"></textarea>
                         </div>
+
+                        <div class="mb-3">
+                            <label for="followup_days" class="form-label">Follow-up (days)</label>
+                            <input type="number" class="form-control" id="followup_days" name="followup_days" min="0" placeholder="e.g., 10">
+                            <small class="text-muted">If patient should return after X days</small>
+                        </div>
                         
                         <button type="submit" class="btn btn-info w-100">Record Visit</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Upload Medical Report -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Upload Medical Report</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/doctor/upload-report" enctype="multipart/form-data">
+                        <input type="hidden" name="patient_id" value="{{ patient.get('id', '') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Select Report (PDF/Image)</label>
+                            <input type="file" class="form-control" name="file" required>
+                        </div>
+                        <button type="submit" class="btn btn-secondary w-100">Upload Report</button>
                     </form>
                 </div>
             </div>

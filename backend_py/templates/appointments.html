@@ -32,9 +32,13 @@
                             <label for="doctor_name" class="form-label">Select Doctor</label>
                             <select class="form-select" id="doctor_name" name="doctor_name" required>
                                 <option value="">Choose a doctor...</option>
-                                <option>Dr. Rajesh Kumar - General Medicine</option>
-                                <option>Dr. Priya Singh - Cardiology</option>
-                                <option>Dr. Amit Patel - Pediatrics</option>
+                                {% if doctors %}
+                                    {% for d in doctors %}
+                                        <option>{{ d.name }}{% if d.specialty %} - {{ d.specialty }}{% endif %}</option>
+                                    {% endfor %}
+                                {% else %}
+                                    <option disabled>No approved doctors available</option>
+                                {% endif %}
                             </select>
                         </div>
                         <div class="mb-3">
@@ -79,7 +83,7 @@
                             <td>
                                 <strong>{{ apt.get('patient_name', apt.patient if apt.patient is defined else 'N/A') }}</strong>
                             </td>
-                            <td>{{ apt.get('doctor_name', apt.doctor if apt.doctor is defined else 'N/A') }}</td>
+                            <td>{{ apt.get('doctor_display', apt.get('doctor_name', apt.doctor if apt.doctor is defined else 'N/A')) }}</td>
                             <td>
                                 {{ apt.get('date', '') }} at {{ apt.get('time', apt.time if apt.time is defined else '') }}
                             </td>

@@ -3,7 +3,14 @@
 {% block content %}
 <div class="container py-5">
 
-    <h2 class="mb-4">🩺 AI Medical Report</h2>
+    <h2 class="mb-4">🩺 AI Medical Report - {{ report_name }}</h2>
+
+    <!-- ✅ Success Message -->
+    {% if msg == 'uploaded' %}
+    <div class="alert alert-success text-center">
+        ✅ Report uploaded successfully! AI analysis updated.
+    </div>
+    {% endif %}
 
     <!-- 🚨 Emergency Alert -->
     {% if health_analysis.emergency %}
@@ -37,15 +44,30 @@
         </div>
     </div>
 
-    <!-- Risk Percentage Graph -->
+    <!-- Risk Percentage Graph + Download & Upload -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header bg-light">
             Risk Percentage Chart
         </div>
-        <div class="card-body">
-            <canvas id="riskChart"></canvas>
-            <!-- PDF Download Button -->
-            <a href="/{{ pdf_file }}" class="btn btn-success mt-3">📄 Download PDF</a>
+        <div class="card-body text-center">
+            <canvas id="riskChart" style="max-width: 300px; max-height: 300px;"></canvas>
+
+            <!-- PDF Download + Upload Buttons Side by Side -->
+            <div class="d-flex gap-2 mt-3 justify-content-center">
+                <!-- Download PDF -->
+                <a href="/download-pdf/{{ pdf_file }}" class="btn btn-success">
+                    📄 Download Latest Report PDF
+                </a>
+
+                <!-- Upload Report Form -->
+                <form action="/patient/upload-report" method="post" enctype="multipart/form-data" style="display:inline;">
+                    <input type="file" name="file" class="d-none" id="uploadInput">
+                    <label for="uploadInput" class="btn btn-primary mb-0" style="cursor:pointer;">
+                        ⬆️ Upload New Report
+                    </label>
+                    <button type="submit" id="uploadBtn" style="display:none;"></button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -126,6 +148,16 @@ new Chart(ctx, {
             legend: { display: true }
         }
     }
+});
+</script>
+
+<!-- Auto-submit Upload Form -->
+<script>
+const uploadInput = document.getElementById('uploadInput');
+const uploadBtn = document.getElementById('uploadBtn');
+
+uploadInput.addEventListener('change', () => {
+    uploadBtn.click();
 });
 </script>
 

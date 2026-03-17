@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">🔐 Enter OTP</h5>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+
+                    <p class="text-muted">OTP sent to: <strong>{{ phone }}</strong></p>
+                    <form method="POST" action="/register/otp">
+                        <div class="mb-3">
+                            <label for="otp" class="form-label">OTP</label>
+                            <input type="text" class="form-control" id="otp" name="otp" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Verify OTP</button>
+                    </form>
+                </div>
+            </div>
+
+            <p class="text-center mt-3 mb-0">
+                Wrong number?
+                <a href="/register/phone" class="text-decoration-none">Change</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

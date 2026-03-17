@@ -80,6 +80,29 @@
                     {% else %}
                         <p class="text-muted">No significant medical history recorded</p>
                     {% endif %}
+
+                    <!-- Treatment Status -->
+                    {% set visits = patient.get('visits', []) %}
+                    {% if visits %}
+                        {% set latest_visit = (visits | reverse | list)[0] %}
+                        {% set first_visit = visits[0] %}
+                        <h5 class="mt-4 mb-3">Ongoing Treatment</h5>
+                        <p class="mb-1"><strong>Current Doctor:</strong> {{ latest_visit.get('doctor', 'N/A') }}</p>
+                        <p class="mb-1"><strong>Current Issue:</strong> {{ latest_visit.get('diagnosis', 'N/A') }}</p>
+                        <p class="mb-0"><strong>Treatment Since:</strong> {{ first_visit.get('date', '')[:10] }}</p>
+                    {% endif %}
+
+                    <!-- Latest Report -->
+                    <h5 class="mt-4 mb-3">Latest Report</h5>
+                    {% if patient.get('reports', []) %}
+                        {% set latest_report = (patient.get('reports') | reverse | list)[0] %}
+                        <p class="mb-2"><strong>Report:</strong> {{ latest_report.get('filename', 'Report') }}</p>
+                        <a class="btn btn-sm btn-outline-primary" href="{{ latest_report.get('path', '#') }}" download>
+                            Download Latest Report
+                        </a>
+                    {% else %}
+                        <p class="text-muted">No reports available</p>
+                    {% endif %}
                 </div>
             </div>
 
@@ -145,6 +168,17 @@
                         </ul>
                     </div>
 
+                    <div class="d-grid gap-2">
+                        <button id="findHospitalsBtn" class="btn btn-danger">
+                            Find Nearby Hospitals
+                        </button>
+                        <button id="findClinicsBtn" class="btn btn-outline-danger">
+                            Find Nearby Clinics
+                        </button>
+                        <a href="tel:112" class="btn btn-dark">Call Emergency (112)</a>
+                        <small id="geoStatus" class="text-muted"></small>
+                    </div>
+
                     <h6 class="mt-4 mb-3">Patient Contact</h6>
                     <p class="mb-1">
                         <strong>Emergency:</strong><br>
@@ -180,6 +214,58 @@
     <a href="/" class="btn btn-secondary">← Back to Home</a>
     {% endif %}
 </div>
+
+<script>
+const findBtn = document.getElementById("findHospitalsBtn");
+const findClinicsBtn = document.getElementById("findClinicsBtn");
+const geoStatus = document.getElementById("geoStatus");
+
+function openMaps(lat, lng) {
+    const url = `https://www.google.com/maps/search/hospitals+near+me/@${lat},${lng},14z`;
+    window.open(url, "_blank");
+}
+
+findBtn?.addEventListener("click", () => {
+    geoStatus.textContent = "Fetching location...";
+    if (!navigator.geolocation) {
+        geoStatus.textContent = "Geolocation not supported on this device.";
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            geoStatus.textContent = "Opening nearby hospitals...";
+            openMaps(pos.coords.latitude, pos.coords.longitude);
+        },
+        () => {
+            geoStatus.textContent = "Location access denied. Please enable GPS.";
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+    );
+});
+
+function openClinics(lat, lng) {
+    const url = `https://www.google.com/maps/search/clinics+near+me/@${lat},${lng},14z`;
+    window.open(url, "_blank");
+}
+
+findClinicsBtn?.addEventListener("click", () => {
+    geoStatus.textContent = "Fetching location...";
+    if (!navigator.geolocation) {
+        geoStatus.textContent = "Geolocation not supported on this device.";
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            geoStatus.textContent = "Opening nearby clinics...";
+            openClinics(pos.coords.latitude, pos.coords.longitude);
+        },
+        () => {
+            geoStatus.textContent = "Location access denied. Please enable GPS.";
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+    );
+});
+</script>
 
 <style>
     body {

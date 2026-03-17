@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">Upload New Report</h2>
+    <form action="/upload-report/{{ report_id }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" class="form-control mb-3" required>
+        <a href="/upload-report/{{ report_id }}" class="btn btn-primary">
+         ⬆️ Upload New Report
+       </a>
+        <a href="/patient/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+    </form>
+</div>
+{% endblock %}

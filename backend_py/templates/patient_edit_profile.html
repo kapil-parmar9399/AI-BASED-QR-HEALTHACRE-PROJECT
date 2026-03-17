@@ -56,7 +56,8 @@
                         <div class="mb-3">
                             <label for="contact" class="form-label">Contact Number</label>
                             <input type="tel" class="form-control" id="contact" name="contact" 
-                                   value="{{ patient.get('contact', '') }}" placeholder="10-digit mobile number">
+                                   value="{{ patient.get('contact', '') }}" placeholder="10-digit mobile number"
+                                   pattern="(\+[1-9]\d{9,14}|\d{10,15})">
                         </div>
 
                         <div class="mb-3">
@@ -82,7 +83,8 @@
                         <div class="mb-3">
                             <label for="emergency_contact" class="form-label">Emergency Contact Number</label>
                             <input type="tel" class="form-control" id="emergency_contact" name="emergency_contact" 
-                                   value="{{ patient.get('emergency_contact', '') }}" placeholder="In case of emergency">
+                                   value="{{ patient.get('emergency_contact', '') }}" placeholder="In case of emergency"
+                                   pattern="(\+[1-9]\d{9,14}|\d{10,15})">
                         </div>
 
                         <!-- New Fields Added -->

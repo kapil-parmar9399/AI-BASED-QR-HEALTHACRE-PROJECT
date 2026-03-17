@@ -160,6 +160,60 @@
     {% endif %}
 </div>
 
+    <!-- My Appointments -->
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">ðŸ“… My Appointments</h5>
+            <a href="/appointments" class="btn btn-sm btn-outline-primary">Book Appointment</a>
+        </div>
+        <div class="card-body">
+            {% if appointments %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless">
+                        <thead>
+                            <tr class="border-bottom">
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for apt in appointments %}
+                            <tr class="border-bottom">
+                                <td>{{ apt.get('doctor_display', apt.get('doctor_name', 'N/A')) }}</td>
+                                <td>{{ apt.get('date', '') }}</td>
+                                <td>{{ apt.get('time', '') }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if apt.get('status') == 'accepted' %} bg-success
+                                        {% elif apt.get('status') == 'rejected' %} bg-danger
+                                        {% elif apt.get('status') == 'pending' %} bg-warning
+                                        {% else %} bg-secondary {% endif %}">
+                                        {{ apt.get('status', 'unknown') }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">No appointments booked</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if followup_alert %}
+    <div class="alert alert-warning d-flex justify-content-between align-items-center">
+        <div>
+            <strong>Follow-up Reminder:</strong>
+            {{ followup_alert.doctor }} asked for a checkup. Due date: {{ followup_alert.due_date }}.
+        </div>
+        <span class="badge bg-warning text-dark">Days left: {{ followup_alert.days_left }}</span>
+    </div>
+    {% endif %}
+
 <style>
 /* Card hover effect */
 .feature-card {

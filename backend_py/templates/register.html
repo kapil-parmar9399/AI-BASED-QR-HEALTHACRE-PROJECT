@@ -15,7 +15,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                     {% endif %}
-
                     <form method="POST" action="/register">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
@@ -31,16 +30,42 @@
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password" required>
-                            <small class="text-muted">At least 6 characters</small>
+                            <small class="text-muted">Use 8+ chars with upper, lower, number, special</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mobile Number</label>
+                            <input type="text" class="form-control" value="{{ phone }}" disabled>
+                            <small class="text-muted">Verified phone number</small>
                         </div>
 
                         <div class="mb-3">
                             <label for="role" class="form-label">Select Your Role</label>
                             <select class="form-select" id="role" name="role" required>
-                                <option value="patient" selected>👤 Patient</option>
-                                <option value="doctor">👨‍⚕️ Doctor</option>
-                                <option value="admin">🔐 Admin</option>
+                                <option value="patient" selected>Patient</option>
+                                <option value="doctor">Doctor</option>
+                                <option value="admin">Admin</option>
                             </select>
+                        </div>
+
+                        <div id="doctorFields" style="display:none;">
+                            <div class="mb-3">
+                                <label for="doctor_specialty" class="form-label">Doctor Specialty</label>
+                                <input type="text" class="form-control" id="doctor_specialty" name="doctor_specialty" placeholder="e.g., Cardiology">
+                            </div>
+                            <div class="mb-3">
+                                <label for="doctor_degree" class="form-label">Degree</label>
+                                <input type="text" class="form-control" id="doctor_degree" name="doctor_degree" placeholder="e.g., MBBS, MD">
+                            </div>
+                            <div class="mb-3">
+                                <label for="doctor_id" class="form-label">Doctor ID / Registration No.</label>
+                                <input type="text" class="form-control" id="doctor_id" name="doctor_id" placeholder="Registration number">
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 mb-3">Create Account</button>
@@ -64,4 +89,18 @@
         </div>
     </div>
 </div>
+
+<script>
+const roleSelect = document.getElementById("role");
+const doctorFields = document.getElementById("doctorFields");
+function toggleDoctorFields() {
+    if (roleSelect.value === "doctor") {
+        doctorFields.style.display = "block";
+    } else {
+        doctorFields.style.display = "none";
+    }
+}
+roleSelect?.addEventListener("change", toggleDoctorFields);
+toggleDoctorFields();
+</script>
 {% endblock %}

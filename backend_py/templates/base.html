@@ -18,9 +18,20 @@
   <!-- Left side links -->
   <ul class="navbar-nav me-auto mb-2 mb-lg-0">
     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-    <li class="nav-item"><a class="nav-link" href="/patients">Patients</a></li>
-    <li class="nav-item"><a class="nav-link" href="/doctors">Doctors</a></li>
-    <li class="nav-item"><a class="nav-link" href="/appointments">Appointments</a></li>
+    {% set role = request.session.get('role') %}
+    {% if role == 'patient' %}
+      <li class="nav-item"><a class="nav-link" href="/patient/dashboard">My Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="/doctors">Doctors</a></li>
+    {% elif role == 'doctor' %}
+      <li class="nav-item"><a class="nav-link" href="/doctor/dashboard">Doctor Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="/patients">Patients</a></li>
+    {% elif role == 'admin' %}
+      <li class="nav-item"><a class="nav-link" href="/admin/dashboard">Admin Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="/patients">Patients</a></li>
+      <li class="nav-item"><a class="nav-link" href="/doctors">Doctors</a></li>
+    {% else %}
+      <li class="nav-item"><a class="nav-link" href="/doctors">Doctors</a></li>
+    {% endif %}
   </ul>
 
   <!-- Right side login/register or user info -->

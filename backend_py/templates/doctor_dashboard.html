@@ -57,9 +57,36 @@
                                     <p class="mb-1"><strong>{{ apt.get('patient_name', 'N/A') }}</strong></p>
                                     <small class="text-muted">{{ apt.get('date', '') }} at {{ apt.get('time', '') }}</small>
                                 </div>
-                                <span class="badge bg-{{ 'success' if apt.get('status') == 'scheduled' else 'warning' }}">
-                                    {{ apt.get('status', 'pending') }}
-                                </span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge 
+                                        {% if apt.get('status') == 'accepted' %} bg-success
+                                        {% elif apt.get('status') == 'rejected' %} bg-danger
+                                        {% elif apt.get('status') == 'rescheduled' %} bg-info
+                                        {% else %} bg-warning {% endif %}">
+                                        {{ apt.get('status', 'pending') }}
+                                    </span>
+                                    {% if apt.get('status') in ['pending', 'scheduled'] %}
+                                    <form method="post" action="/doctor/appointments/{{ apt.get('id') }}/accept" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-success">Accept</button>
+                                    </form>
+                                    <form method="post" action="/doctor/appointments/{{ apt.get('id') }}/reject" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <form method="post" action="/doctor/appointments/{{ apt.get('id') }}/reschedule" class="row g-2">
+                                    <div class="col-5">
+                                        <input type="date" name="appointment_date" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <input type="time" name="time" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-3">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary w-100">Update</button>
+                                    </div>
+                                </form>
                             </div>
                         {% endfor %}
                         </div>
