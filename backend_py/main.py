@@ -373,9 +373,9 @@ def _ocr_text_from_pdf_path(pdf_path: str) -> str:
 
 def send_sms_via_twilio(to: str, body: str) -> bool:
     """Send SMS using Twilio SDK if configured."""
-    sid = os.getenv('TWILIO_SID')
+    sid = os.getenv('TWILIO_SID') or os.getenv('TWILIO_ACCOUNT_SID')
     auth = os.getenv('TWILIO_AUTH_TOKEN')
-    from_num = os.getenv('TWILIO_FROM')
+    from_num = os.getenv('TWILIO_FROM') or os.getenv('TWILIO_FROM_NUMBER')
     if not (sid and auth and from_num):
         return False
     if TwilioClient is None:
@@ -384,7 +384,8 @@ def send_sms_via_twilio(to: str, body: str) -> bool:
         client = TwilioClient(sid, auth)
         client.messages.create(body=body, from_=from_num, to=to)
         return True
-    except Exception:
+    except Exception as e:
+        logger.exception("Twilio SMS failed: %s", e)
         return False
 
 
