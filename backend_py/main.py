@@ -909,8 +909,14 @@ def patient_medical_report(request: Request, msg: str = None):
     analysis["medicine"] = medicine
 
     # Emergency alert message (optional)
-    # If risk is high but emergency flag is missing/false, still show alert.
-    if analysis.get("risk_level") == "High" and not analysis.get("emergency"):
+    # If risk is high or risk percentage is very high but emergency flag is missing/false, still show alert.
+    risk_pct_raw = analysis.get("risk_percentage", 0)
+    try:
+        risk_pct = float(risk_pct_raw)
+    except Exception:
+        risk_pct = 0.0
+
+    if (analysis.get("risk_level") == "High" or risk_pct >= 70) and not analysis.get("emergency"):
         analysis["emergency"] = True
         analysis["emergency_message"] = "High risk detected! Please consult a doctor immediately."
     elif analysis.get("emergency"):

@@ -13,7 +13,7 @@
     {% endif %}
 
     <!-- 🚨 Emergency Alert -->
-    {% if health_analysis.emergency %}
+    {% if health_analysis.emergency or (health_analysis.risk_percentage | float) >= 70 %}
     <div class="alert alert-danger text-center">
         <h4>🚨 EMERGENCY ALERT</h4>
         <p>{{ health_analysis.emergency_message }}</p>
