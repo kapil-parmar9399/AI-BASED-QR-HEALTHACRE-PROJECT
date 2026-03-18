@@ -909,8 +909,14 @@ def patient_medical_report(request: Request, msg: str = None):
     analysis["medicine"] = medicine
 
     # Emergency alert message (optional)
-    if analysis["emergency"]:
-        analysis["emergency_message"] = "Immediate medical attention required!"
+    # If risk is high but emergency flag is missing/false, still show alert.
+    if analysis.get("risk_level") == "High" and not analysis.get("emergency"):
+        analysis["emergency"] = True
+        analysis["emergency_message"] = "High risk detected! Please consult a doctor immediately."
+    elif analysis.get("emergency"):
+        # Keep any specific emergency message if already provided
+        if not analysis.get("emergency_message"):
+            analysis["emergency_message"] = "Immediate medical attention required!"
 
     # Step 4: PDF generation (optional: filename by username)
     pdf_filename = f"{user}_medical_report.pdf"
